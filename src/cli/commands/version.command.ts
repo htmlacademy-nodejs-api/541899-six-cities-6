@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { Command } from '../interfaces/command.interface.js';
-import { isPackageJSONConfig, paintText } from '../../shared/support-functions.js';
+import { Command } from '../../shared/interfaces/command.interface.js';
+import { isPackageJSONConfig, paintText } from '../../shared/helpers/support-functions.js';
 
 export class VersionCommand implements Command {
   constructor(

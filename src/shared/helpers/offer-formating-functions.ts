@@ -2,7 +2,7 @@ import { Rental, RentalType } from '../types/index.js';
 
 export function formateToRentals(rawData: string): Rental[] {
   if (!rawData) {
-    throw new Error('File hasn\'t been read');
+    throw new Error('Файл не был считан');
   }
 
   return rawData.split('\n')

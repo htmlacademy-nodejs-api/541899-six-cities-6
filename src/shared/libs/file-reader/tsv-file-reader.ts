@@ -1,50 +1,38 @@
-import { FileReader } from '../../../cli/interfaces/file-reader.interface.js';
-import { readFileSync } from 'node:fs';
-import { Rental, RentalType } from '../../types/index.js';
+import { FileReader } from '../../interfaces/file-reader.interface.js';
+import { createReadStream } from 'node:fs';
+import EventEmitter from 'node:events';
 
-export class TSVFileReader implements FileReader {
-  private rawData = '';
+const CHUNK_SIZE = 16384;
 
+export class TsvFileReader extends EventEmitter implements FileReader {
   constructor(
-    private readonly fileName: string
+    private readonly filePath: string
   ) {
+    super();
   }
 
-  read() {
-    this.rawData = readFileSync(this.fileName, { encoding: 'utf-8' });
-  }
+  async read() {
+    const readStream = createReadStream(this.filePath, {
+      highWaterMark: CHUNK_SIZE,
+      encoding: 'utf-8'
+    });
 
-  formateToRentals(): Rental[] {
-    if (!this.rawData) {
-      throw new Error('File hasn\'t been read');
+    let remainingData = '';
+    let nextLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of readStream) {
+      remainingData += chunk.toString();
+
+      while ((nextLinePosition = remainingData.indexOf('\n')) >= 0) {
+        const completedRow = remainingData.slice(0, nextLinePosition + 1);
+        remainingData = remainingData.slice(++nextLinePosition);
+        importedRowCount++;
+
+        this.emit('lineCompleted', completedRow);
+      }
     }
 
-    return this.rawData.split('\n')
-      .filter((row) => row.trim().length > 0)
-      .map((line) => line.split('\t'))
-      .map((
-        [
-          name, description, date, location, previewImage, photos, isPremium, isFavourite, rating, type, numberOfRooms, numberOfGuests, price, commodities, author, numberOfComments, coordinates]) => ({
-        name,
-        description,
-        date,
-        location,
-        previewImage,
-        photos: photos.split(' '),
-        isPremium: !!isPremium,
-        isFavourite: !!isFavourite,
-        rating,
-        type: type as RentalType,
-        numberOfRooms: +numberOfRooms,
-        numberOfGuests: +numberOfGuests,
-        price,
-        commodities: commodities.split(' '),
-        author,
-        numberOfComments: +numberOfComments,
-        coordinates: {
-          latitude: coordinates.split(' ')[0],
-          longitude: coordinates.split(' ')[1],
-        }
-      }));
+    this.emit('end', importedRowCount);
   }
 }

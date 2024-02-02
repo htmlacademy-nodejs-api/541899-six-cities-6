@@ -1,5 +1,5 @@
-import { Command } from '../interfaces/command.interface.js';
-import { paintText } from '../../shared/support-functions.js';
+import { Command } from '../../shared/interfaces/command.interface.js';
+import { paintText } from '../../shared/helpers/support-functions.js';
 
 export class HelpCommand implements Command {
   getCommandName(): string {
@@ -7,7 +7,6 @@ export class HelpCommand implements Command {
   }
 
   async execute(): Promise<void> {
-
     console.info(`
       ${paintText('header', 'Программа для подготовки данных для REST API сервера.')}
       ${paintText('subheader', 'Пример использования:')}

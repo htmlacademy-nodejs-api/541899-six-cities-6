@@ -1,4 +1,4 @@
-import { PackageJSONConfig, ParsedCommand } from './types/index.js';
+import { PackageJSONConfig, ParsedCommand } from '../types/index.js';
 import chalk from 'chalk';
 
 export function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
@@ -49,4 +49,22 @@ export function paintText(textType: 'header' | 'subheader' | 'content' | 'error'
   }
 
   throw new Error('Didn\'t expect to get here');
+}
+
+export function generateRandomValue(min: number, max: number, numAfterDigit = 0) {
+  return +((Math.random() * (max - min)) + min).toFixed(numAfterDigit);
+}
+
+export function getRandomItems<T>(items: T[]): T[] {
+  const startPosition = generateRandomValue(0, items.length - 1);
+  const endPosition = startPosition + generateRandomValue(startPosition, items.length);
+  return items.slice(startPosition, endPosition);
+}
+
+export function getRandomItem<T>(items: T[]): T {
+  return items[generateRandomValue(0, items.length - 1)];
+}
+
+export function getRandomBoolean(): boolean {
+  return Math.random() < 0.5;
 }

@@ -1,4 +1,4 @@
-import { Command } from '../../shared/interfaces/command.interface.js';
+import { Command } from '../interfaces/command.interface.js';
 import { TsvFileReader } from '../../shared/libs/file-reader/tsv-file-reader.js';
 import { paintText } from '../../shared/helpers/support-functions.js';
 import { formateToRentals } from '../../shared/helpers/offer-formating-functions.js';

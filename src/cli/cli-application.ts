@@ -1,5 +1,5 @@
 import { CommandsCollection } from './types/commands-collection.type.js';
-import { Command } from '../shared/interfaces/command.interface.js';
+import { Command } from './interfaces/command.interface.js';
 import { getParsedCommands } from '../shared/helpers/support-functions.js';
 
 export class CLIApplication {

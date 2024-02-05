@@ -1,4 +1,4 @@
-import { Command } from '../../shared/interfaces/command.interface.js';
+import { Command } from '../interfaces/command.interface.js';
 import { paintText } from '../../shared/helpers/support-functions.js';
 
 export class HelpCommand implements Command {

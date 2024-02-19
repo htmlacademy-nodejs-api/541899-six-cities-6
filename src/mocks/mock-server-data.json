@@ -1,12 +1,15 @@
 {
   "api": {
     "names": ["Гвинфор", "Сэмюель", "Перрин", "Эдетей", "Данте", "Ленхерроу", "Паэла", "Токк", "Калатиана", "Сигридр"],
+    "emails": ["green@gmail.com", "triple@mail.ru", "thebest@gmail.com", "shoutinglight@gmail.com", "marusya@mail.ru", "noresponse@mail.com"],
+    "avatars": ["https://avatar1.jpeg", "https://avatar2.jpeg", "https://avatar3.jpeg", "https://avatar4.jpeg", "https://avatar5.jpeg", "https://avatar6.jpeg"],
+    "userTypes": ["обычный", "pro"],
     "descriptions": [
       "Просторная таверна в самом центре столицы",
       "Захудалая питейная для отбросов общества",
       "Лучший спа-отель города, имеющий все виды услуг для красоты",
       "Библиотека с уникальной коллекцией книг периода середины прошлого века",
-      "Обычная квартира для непритязательных клиентов",
+      "Обычная квартира для непретязательных клиентов",
       "Идеальное место для тех, кто хочет отдохнуть от детей",
       "Здесь вы можете провести свой праздник, пригласив множество гостей",
       "Невероятный загородный дом для желающих гулять по лесу, кататься на лошадях и париться в бане"
@@ -37,11 +40,11 @@
     ],
     "types": ["apartment", "house", "room", "hotel"],
     "commodities": [
-        ["Breakfast", "Towels", "Garden"],
-        ["Spa", "Towels"],
-        ["Heating", "Pool", "Pet-friendly"],
-        ["Fireplace", "Pet-friendly"],
-        ["Pool", "Ecological", "Hikes"]
+      ["Breakfast", "Towels", "Garden"],
+      ["Spa", "Towels"],
+      ["Heating", "Pool", "Pet-friendly"],
+      ["Fireplace", "Pet-friendly"],
+      ["Pool", "Ecological", "Hikes"]
     ],
     "coordinates": [
       "48.858093 2.294694",

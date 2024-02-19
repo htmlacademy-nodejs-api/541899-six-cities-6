@@ -14,9 +14,9 @@ export class VersionCommand implements Command {
 
   async execute(..._parameters: string[]): Promise<void> {
     try {
-      console.log(paintText('content', `Версия приложения: ${this.readVersion()}`));
+      console.log(paintText('content', `The application's version: ${this.readVersion()}`));
     } catch (error: unknown) {
-      console.log(paintText('error', `Не удалось считать версию из ${this.filePath}`));
+      console.log(paintText('error', `Failed to read the version from ${this.filePath}`));
 
       if (error instanceof Error) {
         console.log(paintText('error', 'error.message'));
@@ -28,7 +28,7 @@ export class VersionCommand implements Command {
     const importedContent: unknown = JSON.parse(readFileSync(resolve(this.filePath), 'utf-8'));
 
     if (!isPackageJSONConfig(importedContent)) {
-      throw new Error(paintText('error', 'Ошибка при парсинге JSON'));
+      throw new Error(paintText('error', 'Error while JSON parsing'));
     }
 
     return importedContent.version;

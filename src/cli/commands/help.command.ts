@@ -8,13 +8,14 @@ export class HelpCommand implements Command {
 
   async execute(): Promise<void> {
     console.info(`
-      ${paintText('header', 'Программа для подготовки данных для REST API сервера.')}
-      ${paintText('subheader', 'Пример использования:')}
+      ${paintText('header', 'The app for preparing data for REST API server')}
+      ${paintText('subheader', 'Usage example:')}
         ${paintText('content', 'cli.js --<command> [--arguments]')}
-      ${paintText('subheader', 'Доступные команды:')}
-        ${paintText('content', '--version:          # выводит номер версии')}
-        ${paintText('content', '--help:             # выводит данную информацию')}
-        ${paintText('content', '--import <path>:    # импортирует данные из .tsv файла')}
+      ${paintText('subheader', 'Available commands:')}
+        ${paintText('content', '--version:                      # shows app\'s version number')}
+        ${paintText('content', '--help:                         # shows this info')}
+        ${paintText('content', '--import <path>:                # imports data from .tsv file')}
+        ${paintText('content', '--generate <n> <path> <url>:    # generates selected quantity of mock data')}
     `);
   }
 }

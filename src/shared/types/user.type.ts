@@ -1,7 +1,8 @@
+export type UserType = 'обычный' | 'pro';
+
 export type User = {
   name: string;
   email: string;
-  avatar?: string;
-  password: string;
-  userType: 'обычный' | 'pro';
+  avatar: string;
+  userType: UserType;
 };

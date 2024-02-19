@@ -2,19 +2,20 @@ import { OfferGenerator } from '../../interfaces/offer-generator.interface.js';
 import { generateRandomValue, getRandomBoolean, getRandomItem } from '../../helpers/support-functions.js';
 import { MockServerDataType } from '../../types/index.js';
 import dayjs from 'dayjs';
-
-const FIRST_DAY_OF_THE_WEEK = 1;
-const LAST_DAY_OF_THE_WEEK = 7;
-const LOWEST_RATING = 0;
-const HIGHEST_RATING = 5;
-const MIN_ROOM_QUANTITY = 1;
-const MAX_ROOM_QUANTITY = 20;
-const MIN_GUESTS_QUANTITY = 1;
-const MAX_GUESTS_QUANTITY = 20;
-const MIN_PRICE = 1;
-const MAX_PRICE = 1000000;
-const MIN_COMMENTS_QUANTITY = 0;
-const MAX_COMMENTS_QUANTITY = 1000000;
+import {
+  FIRST_DAY_OF_THE_WEEK,
+  HIGHEST_RATING,
+  LAST_DAY_OF_THE_WEEK,
+  LOWEST_RATING,
+  MAX_COMMENTS_QUANTITY,
+  MAX_GUESTS_QUANTITY,
+  MAX_PRICE,
+  MAX_ROOM_QUANTITY,
+  MIN_COMMENTS_QUANTITY,
+  MIN_GUESTS_QUANTITY,
+  MIN_PRICE,
+  MIN_ROOM_QUANTITY,
+} from '../../constants/offer.constants.js';
 
 export class TsvOfferGenerator implements OfferGenerator {
   constructor(private readonly mockData: MockServerDataType) {
@@ -37,10 +38,13 @@ export class TsvOfferGenerator implements OfferGenerator {
     const numberOfGuests = generateRandomValue(MIN_GUESTS_QUANTITY, MAX_GUESTS_QUANTITY);
     const price = generateRandomValue(MIN_PRICE, MAX_PRICE);
     const commodities = getRandomItem(this.mockData.commodities);
-    const author = getRandomItem(this.mockData.names);
+    const userName = getRandomItem(this.mockData.names);
+    const userEmail = getRandomItem(this.mockData.emails);
+    const userAvatar = getRandomItem(this.mockData.avatars);
+    const userType = getRandomItem(this.mockData.userTypes);
     const numberOfComments = generateRandomValue(MIN_COMMENTS_QUANTITY, MAX_COMMENTS_QUANTITY);
     const coordinates = getRandomItem(this.mockData.coordinates);
 
-    return [name, description, date, location, previewImage, photos, isPremium, isFavourite, rating, type, numberOfRooms, numberOfGuests, price, commodities, author, numberOfComments, coordinates].join('\t');
+    return [name, description, date, location, previewImage, photos, isPremium, isFavourite, rating, type, numberOfRooms, numberOfGuests, price, commodities, userName, userEmail, userAvatar, userType, numberOfComments, coordinates].join('\t');
   }
 }

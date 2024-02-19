@@ -1,21 +1,23 @@
-export type RentalType = 'apartment' | 'house' | 'room' | 'hotel';
+import { User } from './user.type.js';
 
-export type Rental = {
+export type OfferType = 'apartment' | 'house' | 'room' | 'hotel';
+
+export type Offer = {
   name: string;
   description: string;
-  date: string;
+  date: Date;
   location: string;
   previewImage: string;
   photos: string[];
   isPremium: boolean;
   isFavourite: boolean;
   rating: string;
-  type: RentalType;
+  type: OfferType;
   numberOfRooms: number;
   numberOfGuests: number;
   price: string;
   commodities: string[];
-  author: string;
+  user: User;
   numberOfComments: number;
   coordinates: {
     latitude: string;

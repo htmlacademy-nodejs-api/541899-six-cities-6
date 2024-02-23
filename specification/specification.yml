@@ -1,0 +1,365 @@
+openapi: 3.1.0
+info:
+  title: API server for "Six Cities" project
+  description: |-
+    List of resources and paths
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: users
+    description: Actions with users
+  - name: offers
+    description: Actions with offers
+  - name: comments
+    description: Actions with comments
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: User registration
+      description: Registers new users
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: User authentication
+      description: Authenticates users
+
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Unauthenticate
+      description: Unauthenticates users
+
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Get all offers
+      description: Returns offers list
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Get detailed offer by ID
+      description: Returns specific offer data
+
+  /offers/{offerId}/comments:
+    get:
+      tags:
+        - comments
+      summary: Get comments for specified offer
+      description: Returns comments for specified offer
+
+  /offers/favorites:
+    get:
+      tags:
+        - offer
+      summary: Favorite offers
+      description: Returns favourite offers' list
+
+  /offers{offerId}/favorite:
+    put:
+      tags:
+        - offers
+      summary: Favorite offer
+      description: Adds offer to or removes it from favorites list
+
+  /offers/premium:
+    get:
+      tags:
+        - offer
+      summary: Premium offers
+      description: Returns premium offers' list
+
+components:
+  schemas:
+    createUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+          required: true
+        name:
+          type: string
+          example: Keks
+          required: true
+        password:
+          type: string
+          example: 123456
+          required: true
+        userType:
+          type: string
+          enum:
+            - обычный
+            - pro
+          required: true
+          example: pro
+        avatar:
+          type: string
+
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+        name:
+          type: string
+          example: Keks
+        avatar:
+          type: string
+        userType:
+          type: string
+          enum:
+            - обычный
+            - pro
+
+    authorizedUser:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        login:
+          type: string
+          example: keks@htmlacademy.ru
+        password:
+          type: string
+          example: 123456
+
+    createOffer:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        description:
+          type: string
+          required: true
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+          required: true
+        previewImage:
+          type: string
+          required: true
+        photos:
+          type: array
+          items:
+            type: string
+        isPremium:
+          type: boolean
+          required: true
+        isFavourite:
+          type: boolean
+          required: true
+        type:
+          type: string
+          enum:
+            - apartment
+            - house
+            - room
+            - hotel
+          required: true
+        numberOfRooms:
+          type: integer
+          required: true
+        numberOfGuests:
+          type: integer
+          required: true
+        price:
+          type: number
+          required: true
+        commodities:
+          type: array
+          items:
+            type: string
+          required: true
+        userId:
+          type: string
+          required: true
+
+    updateOffer:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        description:
+          type: string
+          required: true
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+          required: true
+        previewImage:
+          type: string
+          required: true
+        photos:
+          type: array
+          items:
+            type: string
+        isPremium:
+          type: boolean
+          required: true
+        isFavourite:
+          type: boolean
+          required: true
+        type:
+          type: string
+          enum:
+            - apartment
+            - house
+            - room
+            - hotel
+          required: true
+        numberOfRooms:
+          type: integer
+          required: true
+        numberOfGuests:
+          type: integer
+          required: true
+        price:
+          type: number
+          required: true
+        commodities:
+          type: array
+          items:
+            type: string
+          required: true
+        userId:
+          type: string
+          required: true
+
+    offer:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        description:
+          type: string
+          required: true
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+          required: true
+        publicationDate:
+          type: string
+          format: date-time
+        previewImage:
+          type: string
+          required: true
+        photos:
+          type: array
+          items:
+            type: string
+        isPremium:
+          type: boolean
+          required: true
+        isFavourite:
+          type: boolean
+          required: true
+        type:
+          type: string
+          enum:
+            - apartment
+            - house
+            - room
+            - hotel
+          required: true
+        numberOfRooms:
+          type: integer
+          required: true
+        numberOfGuests:
+          type: integer
+          required: true
+        price:
+          type: number
+          required: true
+        commodities:
+          type: array
+          items:
+            type: string
+          required: true
+        userId:
+          type: string
+          required: true
+        commentsAmount:
+          type: integer
+
+    offerPreview:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        publicationDate:
+          type: string
+          format: date-time
+        previewImage:
+          type: string
+          required: true
+        isPremium:
+          type: boolean
+          required: true
+        isFavourite:
+          type: boolean
+          required: true
+        type:
+          type: string
+          enum:
+            - apartment
+            - house
+            - room
+            - hotel
+          required: true
+
+    createComment:
+      type: object
+      properties:
+        text:
+          type: string
+          required: true
+        rating:
+          type: number
+          required: true
+        user:
+          $ref: '#/components/schemas/user'
+
+    comment:
+      type: object
+      properties:
+        text:
+          type: string
+        date:
+          type: string
+          format: date-time
+        rating:
+          type: number
+        user:
+          $ref: '#/components/schemas/user'

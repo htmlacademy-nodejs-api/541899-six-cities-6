@@ -1,4 +1,5 @@
-import { Offer, OfferType, UserType } from '../types/index.js';
+import { Commodity, Location, Offer, OfferType } from '../types/offer.type.js';
+import { UserType } from '../types/user.type.js';
 
 export function getOfferFromString(rawData: string): Offer {
   const [
@@ -9,8 +10,6 @@ export function getOfferFromString(rawData: string): Offer {
     previewImage,
     photos,
     isPremium,
-    isFavourite,
-    rating,
     type,
     numberOfRooms,
     numberOfGuests,
@@ -20,7 +19,6 @@ export function getOfferFromString(rawData: string): Offer {
     userEmail,
     userAvatar,
     userType,
-    numberOfComments,
     coordinates,
   ] = rawData.replace('\n', '').split('\t');
 
@@ -28,24 +26,21 @@ export function getOfferFromString(rawData: string): Offer {
     name,
     description,
     date: new Date(date),
-    location,
+    location: location as Location,
     previewImage,
     photos: photos.split(','),
     isPremium: !!isPremium,
-    isFavourite: !!isFavourite,
-    rating,
     type: type as OfferType,
     numberOfRooms: +numberOfRooms,
     numberOfGuests: +numberOfGuests,
     price,
-    commodities: commodities.split(','),
+    commodities: commodities.split(',') as Commodity[],
     user: {
       name: user,
       email: userEmail,
       avatar: userAvatar,
       userType: userType as UserType,
     },
-    numberOfComments: +numberOfComments,
     coordinates: {
       latitude: coordinates.split(' ')[0],
       longitude: coordinates.split(' ')[1],

@@ -1,0 +1,2 @@
+export const MIN_COMMENTS_QUANTITY = 0;
+export const MAX_COMMENTS_QUANTITY = 1000000;

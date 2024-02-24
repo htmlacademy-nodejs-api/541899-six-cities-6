@@ -1,5 +1,5 @@
 import { Command } from '../interfaces/command.interface.js';
-import { paintText } from '../../shared/helpers/support-functions.js';
+import { generateRandomValue, paintText } from '../../shared/helpers/support-functions.js';
 import { getOfferFromString } from '../../shared/helpers/offer-formating-functions.js';
 import { getMongoURI } from '../../shared/helpers/database.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.contstants.js';
@@ -12,13 +12,16 @@ import { TsvFileReader } from '../../shared/libs/file-reader/tsv-file-reader.js'
 import { Logger } from '../../shared/interfaces/logger.interface.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { DefaultOfferService, OfferModel, OfferService } from '../../shared/modules/offer/index.js';
-import { Offer } from '../../shared/types/index.js';
+import { FIRST_DAY_OF_THE_WEEK, HIGHEST_RATING, LAST_DAY_OF_THE_WEEK } from '../../shared/constants/offer.constants.js';
+import { Offer } from '../../shared/types/offer.type.js';
+import { MIN_COMMENTS_QUANTITY } from '../../shared/constants/comment.constants.js';
+import dayjs from 'dayjs';
 
 export class ImportCommand implements Command {
   private userService: UserService;
   private offerService: OfferService;
   private databaseClient: DatabaseClient;
-  private logger: Logger;
+  private readonly logger: Logger;
   private salt: string;
 
   constructor() {
@@ -27,7 +30,7 @@ export class ImportCommand implements Command {
 
     this.logger = new ConsoleLogger();
     this.userService = new DefaultUserService(this.logger, UserModel);
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
+    this.offerService = new DefaultOfferService(this.logger, OfferModel, UserModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
@@ -61,7 +64,7 @@ export class ImportCommand implements Command {
 
   private async onImportedLine(line: string, resolve: () => void) {
     const offer = getOfferFromString(line);
-    await this.saveOffer(offer);
+    await this.createOffer(offer);
     resolve();
   }
 
@@ -69,29 +72,28 @@ export class ImportCommand implements Command {
     console.log(paintText('content', `Has imported ${count} rows`));
   }
 
-  private async saveOffer(offer: Offer) {
+  private async createOffer(offer: Offer) {
     const user = await this.userService.findOrCreate({
       ...offer.user,
       password: DEFAULT_USER_PASSWORD,
     }, this.salt);
 
-    await this.offerService.create({
+    await this.offerService.createOffer({
       name: offer.name,
       description: offer.description,
-      date: offer.date,
+      date: dayjs().subtract(generateRandomValue(FIRST_DAY_OF_THE_WEEK, LAST_DAY_OF_THE_WEEK), 'day').toISOString(),
       location: offer.location,
       previewImage: offer.previewImage,
       photos: offer.photos,
       isPremium: offer.isPremium,
-      isFavourite: offer.isFavourite,
-      rating: offer.rating,
+      rating: HIGHEST_RATING,
       type: offer.type,
       numberOfRooms: offer.numberOfRooms,
       numberOfGuests: offer.numberOfGuests,
       price: offer.price,
       commodities: offer.commodities,
       userId: user.id,
-      numberOfComments: offer.numberOfComments,
+      numberOfComments: MIN_COMMENTS_QUANTITY,
       coordinates: offer.coordinates,
     });
   }

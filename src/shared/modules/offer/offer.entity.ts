@@ -1,19 +1,15 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
-import { OfferType } from '../../types/index.js';
 import {
-  HIGHEST_RATING,
-  LOWEST_RATING,
   MAX_DESCRIPTION_LENGTH,
   MAX_GUESTS_QUANTITY,
   MAX_PRICE,
   MAX_ROOM_QUANTITY,
-  MIN_COMMENTS_QUANTITY,
   MIN_GUESTS_QUANTITY,
   MIN_PRICE,
   MIN_ROOM_QUANTITY,
 } from '../../constants/offer.constants.js';
 import { UserEntity } from '../user/user.entity.js';
-
+import { OfferType } from '../../types/offer.type.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {
@@ -77,20 +73,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     isPremium: boolean;
 
   @prop({
-    type: Boolean,
-    required: true,
-  })
-    isFavourite: boolean;
-
-  @prop({
-    type: Number,
-    required: true,
-    min: [LOWEST_RATING, 'Min rating'],
-    max: [HIGHEST_RATING, 'Max rating'],
-  })
-    rating: number;
-
-  @prop({
     type: () => String,
     required: true,
   })
@@ -134,15 +116,9 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     userId: Ref<UserEntity>;
 
   @prop({
-    type: Number,
-    default: MIN_COMMENTS_QUANTITY,
-  })
-    numberOfComments: number;
-
-  @prop({
     required: true,
   })
-  public coordinates: {
+    coordinates: {
     latitude: string;
     longitude: string;
   };

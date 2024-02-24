@@ -1,19 +1,11 @@
 openapi: 3.1.0
 info:
   title: API server for "Six Cities" project
-  description: |-
-    List of resources and paths
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
   version: 2.0.0
 tags:
   - name: users
-    description: Actions with users
   - name: offers
-    description: Actions with offers
   - name: comments
-    description: Actions with comments
 
 paths:
   /users/register:
@@ -21,21 +13,38 @@ paths:
       tags:
         - users
       summary: User registration
-      description: Registers new users
+      description: Registers new user
 
   /users/login:
     post:
       tags:
         - users
       summary: User authentication
-      description: Authenticates users
+      description: Authenticates user
 
   /users/logout:
     post:
       tags:
         - users
-      summary: Unauthenticate
-      description: Unauthenticates users
+      summary: User unauthentication
+      description: Unauthenticates user
+
+  /users/favorite:
+    get:
+      tags:
+        - users
+      summary: User's favorite offers
+      description: Returns offers, added to favorites by user
+    post:
+      tags:
+        - users
+      summary: Add offer to favorites
+      description: Adds offer to favorites
+    delete:
+      tags:
+        - users
+      summary: Remove offer from favorites
+      description: Removes offer from favorites
 
   /offers:
     get:
@@ -44,12 +53,29 @@ paths:
       summary: Get all offers
       description: Returns offers list
 
+  /offers/create:
+    post:
+      tags:
+        - offers
+      summary: Offer creation
+      description: Creates new offer
+
   /offers/{offerId}:
     get:
       tags:
         - offers
       summary: Get detailed offer by ID
       description: Returns specific offer data
+    put:
+      tags:
+        - offers
+      summary: Offer editing
+      description: Edits offer
+    delete:
+      tags:
+        - offers
+      summary: Offer deleting
+      description: Deletes offer
 
   /offers/{offerId}/comments:
     get:
@@ -57,27 +83,18 @@ paths:
         - comments
       summary: Get comments for specified offer
       description: Returns comments for specified offer
+    post:
+      tags:
+        - comments
+      summary: Posting comment
+      description: Creates new comment for the offer
 
-  /offers/favorites:
+  /offers/premium/{location}:
     get:
       tags:
         - offer
-      summary: Favorite offers
-      description: Returns favourite offers' list
-
-  /offers{offerId}/favorite:
-    put:
-      tags:
-        - offers
-      summary: Favorite offer
-      description: Adds offer to or removes it from favorites list
-
-  /offers/premium:
-    get:
-      tags:
-        - offer
-      summary: Premium offers
-      description: Returns premium offers' list
+      summary: Seleted location premium offers
+      description: Returns list of premium offer for a city
 
 components:
   schemas:
@@ -166,7 +183,7 @@ components:
         isPremium:
           type: boolean
           required: true
-        isFavourite:
+        isFavorite:
           type: boolean
           required: true
         type:
@@ -190,6 +207,14 @@ components:
           type: array
           items:
             type: string
+            enum:
+              - Breakfast
+              - Air conditioning
+              - Laptop friendly workspace
+              - Baby seat
+              - Washer
+              - Towels
+              - Fridge
           required: true
         userId:
           type: string
@@ -222,7 +247,7 @@ components:
         isPremium:
           type: boolean
           required: true
-        isFavourite:
+        isFavorite:
           type: boolean
           required: true
         type:
@@ -246,6 +271,14 @@ components:
           type: array
           items:
             type: string
+            enum:
+              - Breakfast
+              - Air conditioning
+              - Laptop friendly workspace
+              - Baby seat
+              - Washer
+              - Towels
+              - Fridge
           required: true
         userId:
           type: string
@@ -281,7 +314,7 @@ components:
         isPremium:
           type: boolean
           required: true
-        isFavourite:
+        isFavorite:
           type: boolean
           required: true
         type:
@@ -305,6 +338,14 @@ components:
           type: array
           items:
             type: string
+            enum:
+              - Breakfast
+              - Air conditioning
+              - Laptop friendly workspace
+              - Baby seat
+              - Washer
+              - Towels
+              - Fridge
           required: true
         userId:
           type: string
@@ -327,7 +368,7 @@ components:
         isPremium:
           type: boolean
           required: true
-        isFavourite:
+        isFavorite:
           type: boolean
           required: true
         type:

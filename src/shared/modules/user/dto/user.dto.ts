@@ -1,6 +1,6 @@
-import { UserType } from '../../../types/index.js';
+import { UserType } from '../../../types/user.type.js';
 
-export class CreateUserDto {
+export class UserDto {
   name: string;
   email: string;
   avatar: string;

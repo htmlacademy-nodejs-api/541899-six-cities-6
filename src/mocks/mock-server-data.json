@@ -15,14 +15,12 @@
       "Невероятный загородный дом для желающих гулять по лесу, кататься на лошадях и париться в бане"
     ],
     "locations": [
-      "Берегост",
-      "Кэндлкип",
-      "Ревущий Берег",
-      "Галликин",
-      "Васт",
-      "Халруаа",
-      "Калимпорт",
-      "Мензоберранзан"
+      "Paris",
+      "Cologne",
+      "Brussels",
+      "Amsterdam",
+      "Hamburg",
+      "Dusseldorf"
     ],
     "previewImages": [
       "https://preview_1.jpeg",
@@ -40,11 +38,11 @@
     ],
     "types": ["apartment", "house", "room", "hotel"],
     "commodities": [
-      ["Breakfast", "Towels", "Garden"],
-      ["Spa", "Towels"],
-      ["Heating", "Pool", "Pet-friendly"],
-      ["Fireplace", "Pet-friendly"],
-      ["Pool", "Ecological", "Hikes"]
+      ["Breakfast", "Towels", "Fridge"],
+      ["Air conditioning", "Laptop friendly workspace"],
+      ["Baby seat"],
+      ["Washer", "Fridge"],
+      ["Breakfast", "Laptop friendly workspace"]
     ],
     "coordinates": [
       "48.858093 2.294694",

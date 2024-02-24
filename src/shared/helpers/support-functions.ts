@@ -1,5 +1,6 @@
-import { PackageJSONConfig, ParsedCommand } from '../types/index.js';
 import chalk from 'chalk';
+import { ParsedCommand } from '../types/parsed-command.type.js';
+import { PackageJSONConfig } from '../types/package-json-config.type.js';
 
 export function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
   return (

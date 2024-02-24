@@ -1,9 +1,9 @@
 import { Command } from '../interfaces/command.interface.js';
 import { paintText } from '../../shared/helpers/support-functions.js';
 import got from 'got';
-import { MockServerDataType } from '../../shared/types/index.js';
 import { TsvOfferGenerator } from '../../shared/libs/offer-generator/tsv-offer-generator.js';
 import { TsvFileWriter } from '../../shared/libs/file-writer/tsv-file-writer.js';
+import { MockServerDataType } from '../../shared/types/mock-server-data.type.js';
 
 export class GenerateCommand implements Command {
   private initialData: MockServerDataType;
@@ -43,7 +43,6 @@ export class GenerateCommand implements Command {
     const tsvFileWriter = new TsvFileWriter(filepath);
 
     for (let i = 0; i < offerCount; i++) {
-      console.log(this.initialData);
       await tsvFileWriter.write(tsvOfferGenerator.generate());
     }
   }

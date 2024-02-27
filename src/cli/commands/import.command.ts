@@ -1,5 +1,5 @@
 import { Command } from '../interfaces/command.interface.js';
-import { generateRandomValue, paintText } from '../../shared/helpers/support-functions.js';
+import { paintText } from '../../shared/helpers/support-functions.js';
 import { getOfferFromString } from '../../shared/helpers/offer-formating-functions.js';
 import { getMongoURI } from '../../shared/helpers/database.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.contstants.js';
@@ -12,10 +12,9 @@ import { TsvFileReader } from '../../shared/libs/file-reader/tsv-file-reader.js'
 import { Logger } from '../../shared/interfaces/logger.interface.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { DefaultOfferService, OfferModel, OfferService } from '../../shared/modules/offer/index.js';
-import { FIRST_DAY_OF_THE_WEEK, HIGHEST_RATING, LAST_DAY_OF_THE_WEEK } from '../../shared/constants/offer.constants.js';
+import { HIGHEST_RATING } from '../../shared/constants/offer.constants.js';
 import { Offer } from '../../shared/types/offer.type.js';
 import { MIN_COMMENTS_QUANTITY } from '../../shared/constants/comment.constants.js';
-import dayjs from 'dayjs';
 
 export class ImportCommand implements Command {
   private userService: UserService;
@@ -81,7 +80,7 @@ export class ImportCommand implements Command {
     await this.offerService.createOffer({
       name: offer.name,
       description: offer.description,
-      date: dayjs().subtract(generateRandomValue(FIRST_DAY_OF_THE_WEEK, LAST_DAY_OF_THE_WEEK), 'day').toISOString(),
+      date: offer.date,
       location: offer.location,
       previewImage: offer.previewImage,
       photos: offer.photos,

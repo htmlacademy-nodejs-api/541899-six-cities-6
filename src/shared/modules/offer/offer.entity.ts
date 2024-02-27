@@ -9,7 +9,7 @@ import {
   MIN_ROOM_QUANTITY,
 } from '../../constants/offer.constants.js';
 import { UserEntity } from '../user/user.entity.js';
-import { OfferType } from '../../types/offer.type.js';
+import { Commodity, OfferType } from '../../types/offer.type.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {
@@ -106,7 +106,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     type: [String],
     required: true,
   })
-    commodities: string[];
+    commodities: Commodity[];
 
   @prop({
     type: String,
@@ -119,9 +119,9 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true,
   })
     coordinates: {
-    latitude: string;
-    longitude: string;
-  };
+      latitude: string;
+      longitude: string;
+    };
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

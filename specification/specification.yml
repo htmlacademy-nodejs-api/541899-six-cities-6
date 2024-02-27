@@ -166,12 +166,14 @@ components:
           type: string
           required: true
         location:
-          type: object
-          properties:
-            latitude:
-              type: number
-            longitude:
-              type: number
+          type: string
+          enum:
+            - Paris
+            - Cologne
+            - Brussels
+            - Amsterdam
+            - Hamburg
+            - Dusseldorf
           required: true
         previewImage:
           type: string
@@ -230,12 +232,14 @@ components:
           type: string
           required: true
         location:
-          type: object
-          properties:
-            latitude:
-              type: number
-            longitude:
-              type: number
+          type: string
+          enum:
+            - Paris
+            - Cologne
+            - Brussels
+            - Amsterdam
+            - Hamburg
+            - Dusseldorf
           required: true
         previewImage:
           type: string
@@ -283,6 +287,13 @@ components:
         userId:
           type: string
           required: true
+        coordinates:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
 
     offer:
       type: object
@@ -293,17 +304,19 @@ components:
         description:
           type: string
           required: true
-        location:
-          type: object
-          properties:
-            latitude:
-              type: number
-            longitude:
-              type: number
-          required: true
-        publicationDate:
+        date:
           type: string
           format: date-time
+        location:
+          type: string
+          enum:
+            - Paris
+            - Cologne
+            - Brussels
+            - Amsterdam
+            - Hamburg
+            - Dusseldorf
+          required: true
         previewImage:
           type: string
           required: true
@@ -317,6 +330,8 @@ components:
         isFavorite:
           type: boolean
           required: true
+        rating:
+          type: number
         type:
           type: string
           enum:
@@ -350,35 +365,15 @@ components:
         userId:
           type: string
           required: true
-        commentsAmount:
+        numberOfComments:
           type: integer
-
-    offerPreview:
-      type: object
-      properties:
-        name:
-          type: string
-          required: true
-        publicationDate:
-          type: string
-          format: date-time
-        previewImage:
-          type: string
-          required: true
-        isPremium:
-          type: boolean
-          required: true
-        isFavorite:
-          type: boolean
-          required: true
-        type:
-          type: string
-          enum:
-            - apartment
-            - house
-            - room
-            - hotel
-          required: true
+        coordinates:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
 
     createComment:
       type: object

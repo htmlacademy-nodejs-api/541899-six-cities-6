@@ -4,7 +4,7 @@ import { Logger } from '../../interfaces/logger.interface.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { OfferDto, OfferEntity, OfferService } from './index.js';
 import { SortOrder } from '../../models/sort-type.enum.js';
-import { DEFAULT_OFFER_AMOUNT, DEFAULT_OFFER_PREMIUM_COUNT } from '../../constants/offer.constants.js';
+import { DEFAULT_OFFER_PREMIUM_COUNT } from '../../constants/offer.constants.js';
 import mongoose from 'mongoose';
 import { UserEntity } from '../user/user.entity.js';
 
@@ -73,14 +73,12 @@ export class DefaultOfferService implements OfferService {
       .then((res) => res?.length || res.length === 0 ? null : res[0]);
   }
 
-  async getAllOffers(limit = DEFAULT_OFFER_AMOUNT, sortOrder: { [key: string]: SortOrder } = { publicationDate: SortOrder.Desc }): Promise<DocumentType<OfferEntity>[]> {
+  async getAllOffers(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .aggregate([
         ...this.userLookupPipeline,
         ...this.commentLookupPipeline,
-        { $limit: limit },
-        { $sort: sortOrder },
-      ]);
+      ]).exec();
   }
 
   updateOffer(offerId: string, dto: OfferDto): Promise<DocumentType<OfferEntity> | null> {

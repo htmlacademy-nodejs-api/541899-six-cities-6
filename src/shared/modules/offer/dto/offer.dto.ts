@@ -3,7 +3,7 @@ import { Commodity, Location, OfferType } from '../../../types/offer.type.js';
 export class OfferDto {
   name: string;
   description: string;
-  date: string;
+  date: Date;
   location: Location;
   previewImage: string;
   photos: string[];

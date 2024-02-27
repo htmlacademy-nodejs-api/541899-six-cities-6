@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { ParsedCommand } from '../types/parsed-command.type.js';
 import { PackageJSONConfig } from '../types/package-json-config.type.js';
+import { ClassConstructor, plainToInstance } from 'class-transformer';
 
 export function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
   return (
@@ -68,4 +69,18 @@ export function getRandomItem<T>(items: T[]): T {
 
 export function getRandomBoolean(): boolean {
   return Math.random() < 0.5;
+}
+
+export function getRandomDate(start: Date, end: Date) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
+  return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
+}
+
+export function createErrorObject(message: string) {
+  return {
+    error: message,
+  };
 }

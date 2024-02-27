@@ -36,7 +36,7 @@
       ["https://photo_46.jpeg", "https://photo_2.jpeg"],
       ["https://photo_13.jpeg", "https://photo_21.jpeg"]
     ],
-    "types": ["apartment", "house", "room", "hotel"],
+    "offerTypes": ["apartment", "house", "room", "hotel"],
     "commodities": [
       ["Breakfast", "Towels", "Fridge"],
       ["Air conditioning", "Laptop friendly workspace"],

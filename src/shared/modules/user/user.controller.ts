@@ -1,17 +1,16 @@
 import { inject, injectable } from 'inversify';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { UserService } from './index.js';
 import { StatusCodes } from 'http-status-codes';
 import { UserRdo } from './rdo/user.rdo.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { CreateUserRequest } from './create-user-request.type.js';
-import { BaseController, HttpMethod } from '../../libs/rest/index.js';
+import { BaseController, HttpMethod, UploadFileMiddleware, ValidateObjectIdMiddleware, ValidateDtoMiddleware } from '../../libs/rest/index.js';
 import { Config } from '../../interfaces/config.interface.js';
 import { RestSchema } from '../../libs/config/rest.schema.js';
 import { Component } from '../../types/component.enum.js';
 import { HttpError } from '../../libs/rest/errors/http-error.js';
 import { fillDTO } from '../../helpers/support-functions.js';
-import { ValidateDtoMiddleware } from '../../libs/rest/middleware/validate-dto.middleware.js';
 import { UserDto } from './dto/user.dto.js';
 import { LoginUserDto } from './dto/login-user.dto.js';
 import { LoginUserRequest } from './login-user-request.type.js';
@@ -49,6 +48,15 @@ export class UserController extends BaseController {
       path: '/login',
       method: HttpMethod.Get,
       handler: this.checkAuthToken
+    });
+    this.addRoute({
+      path: '/:userId/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
+      ],
     });
   }
 
@@ -92,5 +100,11 @@ export class UserController extends BaseController {
 
   async checkAuthToken(): Promise<void> {
     throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', 'UserController');
+  }
+
+  async uploadAvatar(req: Request, res: Response) {
+    this.created(res, {
+      filepath: req.file?.path
+    });
   }
 }

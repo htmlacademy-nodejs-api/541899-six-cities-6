@@ -2,11 +2,12 @@ import { inject, injectable } from 'inversify';
 import { Component } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { DocumentType, types } from '@typegoose/typegoose';
-import { OfferDto, OfferEntity, OfferService } from './index.js';
+import { UpdateOfferDto, OfferEntity, OfferService } from './index.js';
 import { SortOrder } from '../../models/sort-type.enum.js';
 import { DEFAULT_OFFER_PREMIUM_COUNT } from '../../constants/offer.constants.js';
 import mongoose from 'mongoose';
 import { UserEntity } from '../user/user.entity.js';
+import { CreateOfferDto } from './dto/create-offer.dto.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -50,7 +51,7 @@ export class DefaultOfferService implements OfferService {
     }
   ];
 
-  async createOffer(dto: OfferDto): Promise<DocumentType<OfferEntity>> {
+  async createOffer(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
     const result = await this.offerModel.create(dto);
     this.logger.info(`New offer has been created: ${dto.name}`);
 
@@ -81,7 +82,7 @@ export class DefaultOfferService implements OfferService {
       ]).exec();
   }
 
-  updateOffer(offerId: string, dto: OfferDto): Promise<DocumentType<OfferEntity> | null> {
+  updateOffer(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.findByIdAndUpdate(offerId, dto, {new: true}).exec();
   }
 

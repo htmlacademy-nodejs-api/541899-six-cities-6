@@ -2,15 +2,15 @@ import { UserType, UserTypeEnum } from '../../../types/user.type.js';
 import { CreateUserMessages } from './create-user-messages.js';
 import { IsEmail, IsEnum, IsString, Length } from 'class-validator';
 import {
-  MAX_NAME_LENGTH,
+  MAX_USER_NAME_LENGTH,
   MAX_PASSWORD_LENGTH,
-  MIN_NAME_LENGTH,
+  MIN_USER_NAME_LENGTH,
   MIN_PASSWORD_LENGTH,
 } from '../../../constants/user.contstants.js';
 
 export class UserDto {
   @IsString({ message: CreateUserMessages.name.invalidFormat })
-  @Length(MIN_NAME_LENGTH, MAX_NAME_LENGTH, { message: CreateUserMessages.name.lengthField })
+  @Length(MIN_USER_NAME_LENGTH, MAX_USER_NAME_LENGTH, { message: CreateUserMessages.name.lengthField })
     name: string;
 
   @IsEmail({}, { message: CreateUserMessages.email.invalidFormat })

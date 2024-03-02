@@ -10,71 +10,76 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray, IsBoolean,
-  IsDateString,
-  IsEnum, IsInt, IsMongoId,
+  IsEnum, IsInt, IsOptional,
   IsString, Max,
   MaxLength, Min,
   MinLength, ValidateNested,
 } from 'class-validator';
 import {
-  MAX_DESCRIPTION_LENGTH, MAX_GUESTS_QUANTITY, MAX_PRICE, MAX_ROOM_QUANTITY,
-  MIN_DESCRIPTION_LENGTH, MIN_GUESTS_QUANTITY, MIN_PRICE,
+  MAX_DESCRIPTION_LENGTH, MAX_GUESTS_QUANTITY, MAX_NAME_LENGTH, MAX_PRICE, MAX_ROOM_QUANTITY,
+  MIN_DESCRIPTION_LENGTH, MIN_GUESTS_QUANTITY, MIN_NAME_LENGTH, MIN_PRICE,
   MIN_ROOM_QUANTITY,
   PHOTOS_QUANTITY,
 } from '../../../constants/offer.constants.js';
 import { OfferValidationMessage } from '../index.js';
 
-export class OfferDto {
-  @MinLength(10, { message: OfferValidationMessage.name.minLength})
-  @MaxLength(100, {message: OfferValidationMessage.name.maxLength})
-    name: string;
+export class UpdateOfferDto {
+  @IsOptional()
+  @MinLength(MIN_NAME_LENGTH, { message: OfferValidationMessage.name.minLength})
+  @MaxLength(MAX_NAME_LENGTH, {message: OfferValidationMessage.name.maxLength})
+    name?: string;
 
+  @IsOptional()
   @MinLength(MIN_DESCRIPTION_LENGTH, { message: OfferValidationMessage.description.minLength })
   @MaxLength(MAX_DESCRIPTION_LENGTH, { message: OfferValidationMessage.description.maxLength })
-    description: string;
+    description?: string;
 
-  @IsDateString({}, { message: OfferValidationMessage.date.invalidFormat })
-    date: Date;
-
+  @IsOptional()
   @IsEnum(LocationEnum, { message: OfferValidationMessage.location.invalid })
-    location: Location;
+    location?: Location;
 
+  @IsOptional()
   @IsString({ message: OfferValidationMessage.previewImage.invalidFormat })
-    previewImage: string;
+    previewImage?: string;
 
+  @IsOptional()
   @IsArray({ message: OfferValidationMessage.photos.invalidFormat })
   @ArrayMinSize(PHOTOS_QUANTITY, { each: true, message: OfferValidationMessage.photos.invalidLength })
   @ArrayMaxSize(PHOTOS_QUANTITY, { each: true, message: OfferValidationMessage.photos.invalidLength })
-    photos: string[];
+    photos?: string[];
 
+  @IsOptional()
   @IsBoolean({ message: OfferValidationMessage.isPremium.invalidFormat })
-    isPremium: boolean;
+    isPremium?: boolean;
 
+  @IsOptional()
   @IsEnum(OfferTypeEnum, { message: OfferValidationMessage.type.invalid })
-    type: OfferType;
+    type?: OfferType;
 
+  @IsOptional()
   @IsInt({ message: OfferValidationMessage.numberOfRooms.invalidFormat })
   @Min(MIN_ROOM_QUANTITY, { message: OfferValidationMessage.numberOfRooms.minValue })
   @Max(MAX_ROOM_QUANTITY, { message: OfferValidationMessage.numberOfRooms.maxValue })
-    numberOfRooms: number;
+    numberOfRooms?: number;
 
+  @IsOptional()
   @IsInt({ message: OfferValidationMessage.numberOfGuests.invalidFormat })
   @Min(MIN_GUESTS_QUANTITY, { message: OfferValidationMessage.numberOfGuests.minValue })
   @Max(MAX_GUESTS_QUANTITY, { message: OfferValidationMessage.numberOfGuests.maxValue })
-    numberOfGuests: number;
+    numberOfGuests?: number;
 
+  @IsOptional()
   @IsInt({ message: OfferValidationMessage.price.invalidFormat })
   @Min(MIN_PRICE, { message: OfferValidationMessage.price.minValue })
   @Max(MAX_PRICE, { message: OfferValidationMessage.price.maxValue })
-    price: string;
+    price?: string;
 
+  @IsOptional()
   @IsArray({ message: OfferValidationMessage.commodities.invalidFormat })
   @IsEnum(CommodityEnum, { each: true, message: OfferValidationMessage.commodities.invalid })
-    commodities: Commodity[];
+    commodities?: Commodity[];
 
-  @IsMongoId({ message: OfferValidationMessage.userId.invalidId })
-    userId: string;
-
+  @IsOptional()
   @ValidateNested()
-    coordinates: Coordinates;
+    coordinates?: Coordinates;
 }

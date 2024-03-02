@@ -1,7 +1,13 @@
 import { inject, injectable } from 'inversify';
 import { OfferService } from './offer-service.interface.js';
 import { Request, Response } from 'express';
-import { HttpMethod, BaseController } from '../../libs/rest/index.js';
+import {
+  HttpMethod,
+  BaseController,
+  ValidateDtoMiddleware,
+  ValidateObjectIdMiddleware,
+  DocumentExistsMiddleware,
+} from '../../libs/rest/index.js';
 import { Component } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { fillDTO } from '../../helpers/support-functions.js';
@@ -11,12 +17,11 @@ import { HttpError } from '../../libs/rest/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import { UpdateOfferRequest } from './update-offer-request.type.js';
 import { CommentRdo, CommentService, CreateCommentDto } from '../comment/index.js';
-import { ValidateDtoMiddleware } from '../../libs/rest/middleware/validate-dto.middleware.js';
-import { OfferDto } from './dto/offer.dto.js';
-import { ValidateObjectIdMiddleware } from '../../libs/rest/middleware/validate-objectid.middleware.js';
+import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { DEFAULT_OFFER_PREMIUM_COUNT } from '../../constants/offer.constants.js';
 import { CreateCommentRequest } from '../comment/types/create-comment-request.type.js';
 import { ParamOfferId } from './type/param-offerid.type.js';
+import { CreateOfferDto } from './dto/create-offer.dto.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -39,34 +44,42 @@ export class OfferController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(OfferDto)]
+      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
     });
     this.addRoute({
       path: '/:offerId',
       method: HttpMethod.Patch,
       handler: this.update, middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(OfferDto),
+        new ValidateDtoMiddleware(UpdateOfferDto),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
     this.addRoute({
       path: '/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
     });
     this.addRoute({
       path: '/:offerId/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+      ]
     });
     this.addRoute({
       path: '/:offerId/comments',
       method: HttpMethod.Post,
       handler: this.createComment,
       middlewares: [
-        new ValidateDtoMiddleware(CreateCommentDto)
+        new ValidateDtoMiddleware(CreateCommentDto),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
     this.addRoute({

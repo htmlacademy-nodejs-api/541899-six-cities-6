@@ -29,6 +29,18 @@ paths:
       summary: User unauthentication
       description: Unauthenticates user
 
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Upload avatar
+      description: Upload user's avatar
+      responses:
+        '201':
+          description: image has been uploaded
+        '401':
+          description: user is not authorized
+
   /users/favorite:
     get:
       tags:

@@ -13,5 +13,6 @@ export interface OfferService {
   getPremiumOffersByLocation(city: string, limit?: number): Promise<DocumentType<OfferEntity>[]>;
   getAllFavoriteOffersByUser(userId: string): Promise<DocumentType<OfferEntity>[]>;
   addOfferToFavorite(userId: string, offerId: string): Promise<DocumentType<UserEntity> | null>;
-  isExist(documentId: string): Promise<boolean>;
+  getPremiumOffersByCity(city: string, limit?: number): Promise<DocumentType<OfferEntity>[]>;
+  exists(documentId: string): Promise<boolean>;
 }

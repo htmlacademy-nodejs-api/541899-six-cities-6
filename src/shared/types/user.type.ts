@@ -1,4 +1,9 @@
-export type UserType = 'обычный' | 'pro';
+export enum UserTypeEnum {
+  'обычный',
+  'pro'
+}
+
+export type UserType = keyof UserTypeEnum;
 
 export type User = {
   name: string;

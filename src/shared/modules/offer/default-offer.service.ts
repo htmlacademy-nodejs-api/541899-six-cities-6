@@ -21,9 +21,9 @@ export class DefaultOfferService implements OfferService {
     {
       $lookup: {
         from: 'users',
-        localField: 'authorId',
+        localField: 'userId',
         foreignField: '_id',
-        as: 'author'
+        as: 'user'
       }
     }
   ];
@@ -32,8 +32,8 @@ export class DefaultOfferService implements OfferService {
     {
       $lookup: {
         from: 'comments',
-        localField: 'authorId',
-        foreignField: 'authorId',
+        localField: 'userId',
+        foreignField: 'userId',
         as: 'comments'
       }
     }, {
@@ -153,7 +153,7 @@ export class DefaultOfferService implements OfferService {
     }
   }
 
-  async isExist(documentId: string): Promise<boolean> {
+  async exists(documentId: string): Promise<boolean> {
     return (await this.offerModel.exists({_id: documentId})) !== null;
   }
 
@@ -163,5 +163,19 @@ export class DefaultOfferService implements OfferService {
         commentCount: 1,
       }
     }).exec();
+  }
+
+  async getPremiumOffersByCity(city: string, limit = DEFAULT_OFFER_PREMIUM_COUNT): Promise<DocumentType<OfferEntity>[]> {
+    return await this.offerModel.aggregate([
+      {
+        $match: {
+          premium: true,
+          city
+        }
+      },
+      ...this.commentLookupPipeline,
+      { $limit: limit },
+      { $sort: { publicationDate: SortOrder.Desc } }
+    ]).exec();
   }
 }

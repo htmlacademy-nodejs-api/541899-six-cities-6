@@ -4,56 +4,59 @@ import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class OfferRdo {
   @Expose()
-  public name: string;
+    id: string;
 
   @Expose()
-  public description: string;
+    name: string;
 
   @Expose()
-  public date: string;
+    description: string;
 
   @Expose()
-  public location: string;
+    date: string;
 
   @Expose()
-  public previewImage: string;
+    location: string;
 
   @Expose()
-  public photos: string[];
+    previewImage: string;
 
   @Expose()
-  public isPremium: boolean;
+    photos: string[];
 
   @Expose()
-  public isFavorite: boolean;
+    isPremium: boolean;
 
   @Expose()
-  public rating: number;
+    isFavorite: boolean;
 
   @Expose()
-  public offerType: OfferType;
+    rating: number;
 
   @Expose()
-  public numberOfRooms: number;
+    offerType: OfferType;
 
   @Expose()
-  public numberOfGuests: number;
+    numberOfRooms: number;
 
   @Expose()
-  public price: number;
+    numberOfGuests: number;
 
   @Expose()
-  public commodities: Commodity[];
+    price: number;
 
   @Expose()
+    commodities: Commodity[];
+
+  @Expose({ name: 'user'})
   @Type(() => UserRdo)
-  public user: UserRdo;
+    user: UserRdo;
 
   @Expose()
-  public numberOfComments: number;
+    numberOfComments: number;
 
   @Expose()
-  public coordinates: {
+    coordinates: {
     latitude: string,
     gratitude: string
   };

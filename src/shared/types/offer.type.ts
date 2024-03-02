@@ -1,10 +1,41 @@
 import { User } from './user.type.js';
 
-export type OfferType = 'apartment' | 'house' | 'room' | 'hotel';
+export enum OfferTypeEnum {
+  apartment,
+  house,
+  room,
+  hotel
+}
 
-export type Commodity = 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge';
+export type OfferType = keyof OfferTypeEnum;
 
-export type Location = 'Paris' | 'Cologne' | 'Brussels' | 'Amsterdam' | 'Hamburg' | 'Dusseldorf';
+export enum CommodityEnum {
+  Breakfast,
+  'Air conditioning',
+  'Laptop friendly workspace',
+  'Baby seat',
+  'Washer',
+  'Towels',
+  'Fridge'
+}
+
+export type Commodity = keyof CommodityEnum;
+
+export enum LocationEnum {
+  Paris,
+  Cologne,
+  Brussels,
+  Amsterdam,
+  Hamburg,
+  Dusseldorf,
+}
+
+export type Location = keyof LocationEnum;
+
+export type Coordinates = {
+  longitude: string,
+  latitude: string,
+}
 
 export type Offer = {
   name: string;

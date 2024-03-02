@@ -11,6 +11,10 @@ import { RestSchema } from '../../libs/config/rest.schema.js';
 import { Component } from '../../types/component.enum.js';
 import { HttpError } from '../../libs/rest/errors/http-error.js';
 import { fillDTO } from '../../helpers/support-functions.js';
+import { ValidateDtoMiddleware } from '../../libs/rest/middleware/validate-dto.middleware.js';
+import { UserDto } from './dto/user.dto.js';
+import { LoginUserDto } from './dto/login-user.dto.js';
+import { LoginUserRequest } from './login-user-request.type.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -20,10 +24,35 @@ export class UserController extends BaseController {
     @inject(Component.Config) private readonly configService: Config<RestSchema>,
   ) {
     super(logger);
-    this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create });
+    this.addRoutes();
   }
 
-  public async create({ body }: CreateUserRequest, res: Response): Promise<void> {
+  private addRoutes() {
+    this.addRoute({
+      path: '/register',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(UserDto)]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+    });
+    this.addRoute({
+      path: '/logout',
+      method: HttpMethod.Post,
+      handler: this.logout
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthToken
+    });
+  }
+
+  async create({ body }: CreateUserRequest, res: Response): Promise<void> {
     const isExistingUser = await this.userService.findByEmail(body.email);
 
     if (isExistingUser) {
@@ -36,5 +65,32 @@ export class UserController extends BaseController {
 
     const result = await this.userService.create(body, this.configService.get('SALT'));
     this.created(res, fillDTO(UserRdo, result));
+  }
+
+  async login(
+    { body }: LoginUserRequest,
+    _res: Response,
+  ): Promise<void> {
+    const existsUser = await this.userService.findByEmail(body.email);
+    if (!existsUser) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        `User with email ${body.email} not found.`,
+        'UserController',
+      );
+    }
+    throw new HttpError(
+      StatusCodes.NOT_IMPLEMENTED,
+      'Not implemented',
+      'UserController',
+    );
+  }
+
+  async logout(): Promise<void> {
+    throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', 'UserController');
+  }
+
+  async checkAuthToken(): Promise<void> {
+    throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', 'UserController');
   }
 }

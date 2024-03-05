@@ -26,10 +26,10 @@ export class CommentEntity extends defaultClasses.TimeStamps {
     offerId: Ref<OfferEntity>;
 
   @prop({
-    required: true,
     ref: UserEntity,
+    required: true,
   })
-    userId!: Ref<UserEntity>;
+    userId: Ref<UserEntity>;
 }
 
 export const CommentModel = getModelForClass(CommentEntity);

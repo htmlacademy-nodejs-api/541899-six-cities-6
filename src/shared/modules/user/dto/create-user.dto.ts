@@ -8,7 +8,7 @@ import {
   MIN_PASSWORD_LENGTH,
 } from '../../../constants/user.contstants.js';
 
-export class UserDto {
+export class CreateUserDto {
   @IsString({ message: CreateUserMessages.name.invalidFormat })
   @Length(MIN_USER_NAME_LENGTH, MAX_USER_NAME_LENGTH, { message: CreateUserMessages.name.lengthField })
     name: string;

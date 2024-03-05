@@ -10,7 +10,7 @@ export class UploadFileMiddleware implements Middleware {
     private fieldName: string,
   ) {}
 
-  public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
     const storage = diskStorage({
       destination: this.uploadDirectory,
       filename: (_req, file, callback) => {

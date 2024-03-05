@@ -1,3 +1,6 @@
 export type RequestQuery = {
-  limit?: number;
+  limit?: string;
+  location?: string;
+  isPremium?: string;
+  isFavorite?: string;
 };

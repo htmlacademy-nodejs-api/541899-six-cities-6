@@ -11,7 +11,7 @@ import {
   ArrayMinSize,
   IsArray, IsBoolean,
   IsDateString,
-  IsEnum, IsInt, IsMongoId,
+  IsEnum, IsInt,
   IsString, Max,
   MaxLength, Min,
   MinLength, ValidateNested,
@@ -72,8 +72,7 @@ export class CreateOfferDto {
   @IsEnum(CommodityEnum, { each: true, message: OfferValidationMessage.commodities.invalid })
     commodities: Commodity[];
 
-  @IsMongoId({ message: OfferValidationMessage.userId.invalidId })
-    userId: string;
+  userId: string;
 
   @ValidateNested()
     coordinates: Coordinates;

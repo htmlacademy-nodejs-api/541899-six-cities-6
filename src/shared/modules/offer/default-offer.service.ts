@@ -4,10 +4,13 @@ import { Logger } from '../../interfaces/logger.interface.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { UpdateOfferDto, OfferEntity, OfferService } from './index.js';
 import { SortOrder } from '../../models/sort-type.enum.js';
-import { DEFAULT_OFFER_PREMIUM_COUNT } from '../../constants/offer.constants.js';
-import mongoose from 'mongoose';
+import { MAX_OFFERS_QUANTITY, MAX_PREMIUM_OFFERS_QUANTITY } from '../../constants/offer.constants.js';
+import mongoose, { Types } from 'mongoose';
 import { UserEntity } from '../user/user.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
+import { StatusCodes } from 'http-status-codes';
+import { HttpError } from '../../libs/rest/errors/http-error.js';
+import { authorPipeline, commentsPipeline, defaultPipeline, getPipeline } from './offer.aggregation.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -18,39 +21,6 @@ export class DefaultOfferService implements OfferService {
   ) {
   }
 
-  private userLookupPipeline = [
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'userId',
-        foreignField: '_id',
-        as: 'user'
-      }
-    }
-  ];
-
-  private commentLookupPipeline = [
-    {
-      $lookup: {
-        from: 'comments',
-        localField: 'userId',
-        foreignField: 'userId',
-        as: 'comments'
-      }
-    }, {
-      $addFields: {
-        totalComments: {
-          $size: '$comments'
-        },
-        averageRating: {
-          $avg: '$comments.rating'
-        }
-      }
-    }, {
-      $unset: 'comments'
-    }
-  ];
-
   async createOffer(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
     const result = await this.offerModel.create(dto);
     this.logger.info(`New offer has been created: ${dto.name}`);
@@ -58,7 +28,10 @@ export class DefaultOfferService implements OfferService {
     return result;
   }
 
-  async findOfferById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+  async findOfferById(
+    userId: string | undefined,
+    offerId: string
+  ): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.aggregate([
       {
         $match: {
@@ -67,38 +40,71 @@ export class DefaultOfferService implements OfferService {
           }
         }
       },
-      ...this.userLookupPipeline,
-      ...this.commentLookupPipeline,
+      ...getPipeline(userId),
     ])
       .exec()
-      .then((res) => res?.length || res.length === 0 ? null : res[0]);
+      .then((result) => {
+        if (result.length === 0) {
+          return null;
+        }
+        return result[0];
+      });
   }
 
-  async getAllOffers(): Promise<DocumentType<OfferEntity>[]> {
+  async getAllOffers(
+    userId: string | undefined,
+    limit = MAX_OFFERS_QUANTITY,
+    sortOrder: { [key: string]: SortOrder } = { publicationDate: SortOrder.Desc }
+  ): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .aggregate([
-        ...this.userLookupPipeline,
-        ...this.commentLookupPipeline,
-      ]).exec();
+        ...getPipeline(userId),
+        { $limit: limit },
+        { $sort: sortOrder },
+      ])
+      .exec();
   }
 
-  updateOffer(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findByIdAndUpdate(offerId, dto, {new: true}).exec();
+  public updateOffer(
+    offerId: string,
+    dto: UpdateOfferDto
+  ): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel.findByIdAndUpdate(offerId, dto, { new: true }).exec();
   }
 
-  async deleteOfferById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+  async deleteOfferById(
+    offerId: string
+  ): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.findByIdAndDelete(offerId).exec();
   }
 
+  async getPremiumOffersByLocation(
+    userId: string | undefined,
+    location: string,
+    limit = MAX_PREMIUM_OFFERS_QUANTITY
+  ): Promise<DocumentType<OfferEntity>[]> {
+    return await this.offerModel.aggregate([
+      {
+        $match: {
+          premium: true,
+          location
+        }
+      },
+      ...getPipeline(userId),
+      { $limit: limit },
+      { $sort: { publicationDate: SortOrder.Desc } }
+    ]).exec();
+  }
+
   async getAllFavoriteOffersByUser(userId: string): Promise<DocumentType<OfferEntity>[]> {
-    return await this.userModel.aggregate([
+    return this.userModel.aggregate([
       {
         $match: { _id: new mongoose.Types.ObjectId(userId) }
       },
       {
         $project: {
-          _id: 1,
-          favorites: {
+          _id: 0,
+          favoriteOffers: {
             $map: {
               input: '$favorites',
               as: 'fav',
@@ -108,75 +114,58 @@ export class DefaultOfferService implements OfferService {
             }
           }
         }
-      }, {
+      },
+      {
         $lookup: {
           from: 'offers',
-          localField: 'favorites',
+          localField: 'favoriteOffers',
           foreignField: '_id',
           as: 'favoriteOffers'
         }
-      }, {
+      },
+      {
         $unwind: {
           path: '$favoriteOffers'
         }
-      }, {
-        $unset: [
-          'favorites', '_id'
-        ]
-      }
-    ]).exec();
-  }
-
-  async getPremiumOffersByLocation(city: string, limit = DEFAULT_OFFER_PREMIUM_COUNT): Promise<DocumentType<OfferEntity>[]> {
-    return await this.offerModel.aggregate([
-      {
-        $match: {
-          premium: true,
-          city
-        }
       },
-      ...this.commentLookupPipeline,
-      { $limit: limit },
-      { $sort: { publicationDate: SortOrder.Desc } }
+      {
+        $replaceRoot: { newRoot: '$favoriteOffers' }
+      },
+      ...commentsPipeline,
+      ...authorPipeline,
+      ...defaultPipeline,
     ]).exec();
-  }
-
-  async addOfferToFavorite(userId: string, offerId: string): Promise<DocumentType<UserEntity> | null> {
-    try {
-      return await this.userModel.findByIdAndUpdate(
-        userId,
-        { $push: { favorites: offerId } },
-        { new: true }
-      );
-    } catch (error) {
-      this.logger.info('Error while adding offer to favorites');
-      return null;
-    }
   }
 
   async exists(documentId: string): Promise<boolean> {
     return (await this.offerModel.exists({_id: documentId})) !== null;
   }
 
-  async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findByIdAndUpdate(offerId, {
-      '$inc': {
-        commentCount: 1,
-      }
-    }).exec();
+  async toggleFavorites(userId: string, offerId: string): Promise<boolean> {
+    const user = await this.userModel.findById(userId).exec();
+
+    if (!user) {
+      throw new HttpError(StatusCodes.NOT_FOUND, `User with id ${userId} not found.`, 'DefaultOfferService');
+    }
+
+    const offerObjectId = new Types.ObjectId(offerId);
+
+    if (user.favoriteOffers.includes(offerObjectId)) {
+      user.favoriteOffers.pull(offerObjectId);
+      await user.save();
+      return false;
+    } else {
+      user.favoriteOffers.push(offerObjectId);
+      await user.save();
+      return true;
+    }
   }
 
-  async getPremiumOffersByCity(city: string, limit = DEFAULT_OFFER_PREMIUM_COUNT): Promise<DocumentType<OfferEntity>[]> {
-    return await this.offerModel.aggregate([
-      {
-        $match: {
-          premium: true,
-          city
-        }
-      },
-      ...this.commentLookupPipeline,
-      { $limit: limit },
-      { $sort: { publicationDate: SortOrder.Desc } }
-    ]).exec();
+  async isAuthor(
+    userId: string,
+    documentId: string
+  ): Promise<boolean> {
+    const offer = await this.offerModel.findById(documentId);
+    return offer?.userId.toString() === userId;
   }
 }

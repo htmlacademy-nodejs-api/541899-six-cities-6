@@ -12,7 +12,7 @@ export class CommentRdo {
     rating: number;
 
   @Expose({ name: 'createdAt'})
-    date: string;
+    date: Date;
 
   @Expose({ name: 'userId'})
   @Type(() => UserRdo)

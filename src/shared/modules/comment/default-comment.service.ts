@@ -25,4 +25,9 @@ export class DefaultCommentService implements CommentService {
       .limit(MAX_COMMENTS_QUANTITY)
       .populate('userId');
   }
+
+  async deleteCommentByOfferId(offerId: string): Promise<number | null> {
+    const result = await this.commentModel.deleteMany({offerId}).exec();
+    return result.deletedCount;
+  }
 }

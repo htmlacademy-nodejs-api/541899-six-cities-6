@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { Commodity, OfferType } from '../../../types/offer.type.js';
+import { Commodity, Location, OfferType } from '../../../types/offer.type.js';
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class OfferRdo {
@@ -16,7 +16,7 @@ export class OfferRdo {
     date: string;
 
   @Expose()
-    location: string;
+    location: Location;
 
   @Expose()
     previewImage: string;

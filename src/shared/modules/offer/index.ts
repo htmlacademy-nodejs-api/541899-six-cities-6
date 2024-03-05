@@ -5,3 +5,4 @@ export * from './offer.entity.js';
 export * from './offer.container.js';
 export * from './rdo/offer.rdo.js';
 export * from './dto/offer.messages.js';
+export * from './dto/favorite-offer.messages.js';

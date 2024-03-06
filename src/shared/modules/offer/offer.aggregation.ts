@@ -65,7 +65,7 @@ export const AUTHOR_PIPELINE = [
   {
     $lookup: {
       from: 'users',
-      localField: 'authorId',
+      localField: 'userId',
       foreignField: '_id',
       as: 'users',
     },

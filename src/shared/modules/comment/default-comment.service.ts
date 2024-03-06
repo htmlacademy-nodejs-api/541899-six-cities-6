@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { COMPONENT } from '../../types/component.enum.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { CommentEntity } from './comment.entity.js';
-import { MAX_COMMENTS_QUANTITY } from '../../constants/comment.constants.js';
+import { COMMENT } from '../../constants/comment.constants.js';
 import { CommentService } from './index.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { SortOrder } from '../../models/sort-type.enum.js';
@@ -22,7 +22,7 @@ export class DefaultCommentService implements CommentService {
     return this.commentModel
       .find({ offerId })
       .sort({ createdAt: SortOrder.Desc })
-      .limit(MAX_COMMENTS_QUANTITY)
+      .limit(COMMENT.LIMIT)
       .populate('userId');
   }
 

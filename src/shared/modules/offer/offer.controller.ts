@@ -16,7 +16,7 @@ import { OfferRdo } from './rdo/offer.rdo.js';
 import { CreateOfferRequest } from './create-offer-request.type.js';
 import { UpdateOfferRequest } from './update-offer-request.type.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { ALLOWED_IMAGE_TYPES, MAX_PREMIUM_OFFERS_QUANTITY, PHOTOS_QUANTITY } from '../../constants/offer.constants.js';
+import { ALLOWED_IMAGE_TYPES, OFFER, PHOTO } from '../../constants/offer.constants.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { FavoriteOfferDto } from './dto/favorite-offer.dto.js';
 import { ParamOfferId } from './type/param-offerid.type.js';
@@ -142,7 +142,7 @@ export class OfferController extends BaseController {
         new ValidateUserMiddleware(this.offerService, 'Offer', 'offerId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image',
           ALLOWED_IMAGE_TYPES,
-          PHOTOS_QUANTITY
+          PHOTO.QUANTITY
         )
       ]
     });
@@ -186,7 +186,7 @@ export class OfferController extends BaseController {
     const offers = await this.offerService.getPremiumOffersByLocation(
       tokenPayload?.id,
       params.location,
-      MAX_PREMIUM_OFFERS_QUANTITY
+      OFFER.MAX_PREMIUM_QUANTITY
     );
     this.returnOkStatus(res, fillDTO(OfferRdo, offers));
   }

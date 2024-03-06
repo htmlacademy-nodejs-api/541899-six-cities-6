@@ -1,12 +1,9 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
 import {
-  MAX_DESCRIPTION_LENGTH,
-  MAX_GUESTS_QUANTITY,
-  MAX_PRICE,
-  MAX_ROOM_QUANTITY,
-  MIN_GUESTS_QUANTITY,
-  MIN_PRICE,
-  MIN_ROOM_QUANTITY,
+  DESCRIPTION,
+  GUEST,
+  PRICE,
+  ROOM,
 } from '../../constants/offer.constants.js';
 import { UserEntity } from '../user/user.entity.js';
 import { Commodity, Location, OfferType } from '../../types/offer.type.js';
@@ -36,7 +33,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     type: String,
     trim: true,
     required: true,
-    maxlength: [MAX_DESCRIPTION_LENGTH],
+    maxlength: [DESCRIPTION.MAX_LENGTH],
   })
     description: string;
 
@@ -80,24 +77,24 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     type: Number,
     required: true,
-    min: [MIN_ROOM_QUANTITY, 'Min room quantity'],
-    max: [MAX_ROOM_QUANTITY, 'Max room quantity'],
+    min: [ROOM.MIN_QUANTITY, 'Min room quantity'],
+    max: [ROOM.MAX_QUANTITY, 'Max room quantity'],
   })
     numberOfRooms: number;
 
   @prop({
     type: Number,
     required: true,
-    min: [MIN_GUESTS_QUANTITY, 'Min guests quantity'],
-    max: [MAX_GUESTS_QUANTITY, 'Max guests quantity'],
+    min: [GUEST.MIN_QUANTITY, 'Min guests quantity'],
+    max: [GUEST.MAX_QUANTITY, 'Max guests quantity'],
   })
     numberOfGuests: number;
 
   @prop({
     type: Number,
     required: true,
-    min: [MIN_PRICE, 'Min price'],
-    max: [MAX_PRICE, 'Max price'],
+    min: [PRICE.LOWEST, 'Min price'],
+    max: [PRICE.HIGHEST, 'Max price'],
   })
     price: number;
 

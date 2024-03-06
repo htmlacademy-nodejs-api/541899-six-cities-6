@@ -19,7 +19,7 @@ export function getOfferFromString(rawData: string): Offer {
     userName,
     userEmail,
     userAvatar,
-    userType,
+    type,
     coordinates,
   ] = rawData.replace('\n', '').split('\t');
 
@@ -41,7 +41,7 @@ export function getOfferFromString(rawData: string): Offer {
       name: userName,
       email: userEmail,
       avatar: userAvatar,
-      userType: userType as UserType,
+      type: type as UserType,
     },
     coordinates: {
       latitude: coordinates.split(' ')[0],

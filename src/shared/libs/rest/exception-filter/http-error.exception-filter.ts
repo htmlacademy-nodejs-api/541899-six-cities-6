@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { ExceptionFilter } from '../index.js';
-import { Component } from '../../../types/component.enum.js';
+import { COMPONENT } from '../../../types/component.enum.js';
 import { Logger } from '../../../interfaces/logger.interface.js';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../errors/http.error.js';
@@ -11,7 +11,7 @@ import { ApplicationError } from '../types/application-error.enum.js';
 @injectable()
 export class HttpErrorExceptionFilter implements ExceptionFilter {
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger
   ) {
     this.logger.info('Register HttpErrorExceptionFilter');
   }

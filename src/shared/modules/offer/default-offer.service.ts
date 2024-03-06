@@ -1,23 +1,23 @@
 import { inject, injectable } from 'inversify';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { UpdateOfferDto, OfferEntity, OfferService } from './index.js';
 import { SortOrder } from '../../models/sort-type.enum.js';
-import { MAX_OFFERS_QUANTITY, MAX_PREMIUM_OFFERS_QUANTITY } from '../../constants/offer.constants.js';
+import { OFFER } from '../../constants/offer.constants.js';
 import mongoose, { Types } from 'mongoose';
 import { UserEntity } from '../user/user.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { StatusCodes } from 'http-status-codes';
 import { HttpError } from '../../libs/rest/errors/http.error.js';
-import { authorPipeline, commentsPipeline, defaultPipeline, getPipeline } from './offer.aggregation.js';
+import { AUTHOR_PIPELINE, COMMENTS_PIPELINE, DEFAULT_PIPELINE, getPipeline } from './offer.aggregation.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger,
-    @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>,
-    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger,
+    @inject(COMPONENT.OFFER_MODEL) private readonly offerModel: types.ModelType<OfferEntity>,
+    @inject(COMPONENT.USER_MODEL) private readonly userModel: types.ModelType<UserEntity>,
   ) {
   }
 
@@ -53,7 +53,7 @@ export class DefaultOfferService implements OfferService {
 
   async getAllOffers(
     userId: string | undefined,
-    limit = MAX_OFFERS_QUANTITY,
+    limit = OFFER.MAX_QUANTITY,
     sortOrder: { [key: string]: SortOrder } = { publicationDate: SortOrder.Desc }
   ): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
@@ -81,12 +81,12 @@ export class DefaultOfferService implements OfferService {
   async getPremiumOffersByLocation(
     userId: string | undefined,
     location: string,
-    limit = MAX_PREMIUM_OFFERS_QUANTITY
+    limit = OFFER.MAX_PREMIUM_QUANTITY
   ): Promise<DocumentType<OfferEntity>[]> {
     return await this.offerModel.aggregate([
       {
         $match: {
-          premium: true,
+          isPremium: true,
           location
         }
       },
@@ -131,9 +131,9 @@ export class DefaultOfferService implements OfferService {
       {
         $replaceRoot: { newRoot: '$favoriteOffers' }
       },
-      ...commentsPipeline,
-      ...authorPipeline,
-      ...defaultPipeline,
+      ...COMMENTS_PIPELINE,
+      ...AUTHOR_PIPELINE,
+      ...DEFAULT_PIPELINE,
     ]).exec();
   }
 
@@ -161,7 +161,7 @@ export class DefaultOfferService implements OfferService {
     }
   }
 
-  async isAuthor(
+  async checkIsAuthor(
     userId: string,
     documentId: string
   ): Promise<boolean> {

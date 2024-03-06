@@ -3,7 +3,7 @@
     "names": ["Гвинфор", "Сэмюель", "Перрин", "Эдетей", "Данте", "Ленхерроу", "Паэла", "Токк", "Калатиана", "Сигридр"],
     "emails": ["green@gmail.com", "triple@mail.ru", "thebest@gmail.com", "shoutinglight@gmail.com", "marusya@mail.ru", "noresponse@mail.com"],
     "avatars": ["https://avatar1.jpeg", "https://avatar2.jpeg", "https://avatar3.jpeg", "https://avatar4.jpeg", "https://avatar5.jpeg", "https://avatar6.jpeg"],
-    "userTypes": ["обычный", "pro"],
+    "userTypes": ["basic", "pro"],
     "descriptions": [
       "Просторная таверна в самом центре столицы",
       "Захудалая питейная для отбросов общества",

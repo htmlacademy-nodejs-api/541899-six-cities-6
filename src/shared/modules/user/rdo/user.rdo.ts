@@ -15,5 +15,5 @@ export class UserRdo {
     avatar: string;
 
   @Expose()
-    userType: UserType;
+    type: UserType;
 }

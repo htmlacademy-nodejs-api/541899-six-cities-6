@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { Command } from '../interfaces/command.interface.js';
-import { isPackageJSONConfig, paintText } from '../../shared/helpers/support-functions.js';
+import { checkIsPackageJSONConfig, paintText } from '../../shared/helpers/support-functions.js';
 
 export class VersionCommand implements Command {
   constructor(
@@ -27,7 +27,7 @@ export class VersionCommand implements Command {
   private readVersion() {
     const importedContent: unknown = JSON.parse(readFileSync(resolve(this.filePath), 'utf-8'));
 
-    if (!isPackageJSONConfig(importedContent)) {
+    if (!checkIsPackageJSONConfig(importedContent)) {
       throw new Error(paintText('error', 'Error while JSON parsing'));
     }
 

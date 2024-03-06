@@ -16,67 +16,65 @@ import {
   MinLength, ValidateNested,
 } from 'class-validator';
 import {
-  MAX_DESCRIPTION_LENGTH, MAX_GUESTS_QUANTITY, MAX_NAME_LENGTH, MAX_PRICE, MAX_ROOM_QUANTITY,
-  MIN_DESCRIPTION_LENGTH, MIN_GUESTS_QUANTITY, MIN_NAME_LENGTH, MIN_PRICE,
-  MIN_ROOM_QUANTITY,
-  PHOTOS_QUANTITY,
+  DESCRIPTION, GUEST, NAME, PRICE, ROOM,
+  PHOTO,
 } from '../../../constants/offer.constants.js';
 import { OFFER_VALIDATION_MESSAGES } from './offer.messages.js';
 
 export class UpdateOfferDto {
   @IsOptional()
-  @MinLength(MIN_NAME_LENGTH, { message: OFFER_VALIDATION_MESSAGES.name.minLength})
-  @MaxLength(MAX_NAME_LENGTH, {message: OFFER_VALIDATION_MESSAGES.name.maxLength})
+  @MinLength(NAME.MIN_LENGTH, { message: OFFER_VALIDATION_MESSAGES.NAME.MIN_LENGTH})
+  @MaxLength(NAME.MAX_LENGTH, {message: OFFER_VALIDATION_MESSAGES.NAME.MAX_LENGTH})
     name?: string;
 
   @IsOptional()
-  @MinLength(MIN_DESCRIPTION_LENGTH, { message: OFFER_VALIDATION_MESSAGES.description.minLength })
-  @MaxLength(MAX_DESCRIPTION_LENGTH, { message: OFFER_VALIDATION_MESSAGES.description.maxLength })
+  @MinLength(DESCRIPTION.MIN_LENGTH, { message: OFFER_VALIDATION_MESSAGES.DESCRIPTION.MIN_LENGTH })
+  @MaxLength(DESCRIPTION.MAX_LENGTH, { message: OFFER_VALIDATION_MESSAGES.DESCRIPTION.MAX_LENGTH })
     description?: string;
 
   @IsOptional()
-  @IsEnum(LocationEnum, { message: OFFER_VALIDATION_MESSAGES.location.invalid })
+  @IsEnum(LocationEnum, { message: OFFER_VALIDATION_MESSAGES.LOCATION.INVALID })
     location?: Location;
 
   @IsOptional()
-  @IsString({ message: OFFER_VALIDATION_MESSAGES.previewImage.invalidFormat })
+  @IsString({ message: OFFER_VALIDATION_MESSAGES.PREVIEW_IMAGE.INVALID_FORMAT })
     previewImage?: string;
 
   @IsOptional()
-  @IsArray({ message: OFFER_VALIDATION_MESSAGES.photos.invalidFormat })
-  @ArrayMinSize(PHOTOS_QUANTITY, { each: true, message: OFFER_VALIDATION_MESSAGES.photos.invalidLength })
-  @ArrayMaxSize(PHOTOS_QUANTITY, { each: true, message: OFFER_VALIDATION_MESSAGES.photos.invalidLength })
+  @IsArray({ message: OFFER_VALIDATION_MESSAGES.PHOTOS.INVALID_FORMAT })
+  @ArrayMinSize(PHOTO.QUANTITY, { each: true, message: OFFER_VALIDATION_MESSAGES.PHOTOS.INVALID_LENGTH })
+  @ArrayMaxSize(PHOTO.QUANTITY, { each: true, message: OFFER_VALIDATION_MESSAGES.PHOTOS.INVALID_LENGTH })
     photos?: string[];
 
   @IsOptional()
-  @IsBoolean({ message: OFFER_VALIDATION_MESSAGES.isPremium.invalidFormat })
+  @IsBoolean({ message: OFFER_VALIDATION_MESSAGES.IS_PREMIUM.INVALID_FORMAT })
     isPremium?: boolean;
 
   @IsOptional()
-  @IsEnum(OfferTypeEnum, { message: OFFER_VALIDATION_MESSAGES.type.invalid })
+  @IsEnum(OfferTypeEnum, { message: OFFER_VALIDATION_MESSAGES.TYPE.INVALID })
     type?: OfferType;
 
   @IsOptional()
-  @IsInt({ message: OFFER_VALIDATION_MESSAGES.numberOfRooms.invalidFormat })
-  @Min(MIN_ROOM_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfRooms.minValue })
-  @Max(MAX_ROOM_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfRooms.maxValue })
+  @IsInt({ message: OFFER_VALIDATION_MESSAGES.NUMBER_OF_ROOMS.INVALID_FORMAT })
+  @Min(ROOM.MIN_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.NUMBER_OF_ROOMS.MIN_VALUE })
+  @Max(ROOM.MAX_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.NUMBER_OF_ROOMS.MAX_VALUE })
     numberOfRooms?: number;
 
   @IsOptional()
-  @IsInt({ message: OFFER_VALIDATION_MESSAGES.numberOfGuests.invalidFormat })
-  @Min(MIN_GUESTS_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfGuests.minValue })
-  @Max(MAX_GUESTS_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfGuests.maxValue })
+  @IsInt({ message: OFFER_VALIDATION_MESSAGES.NUMBER_OF_GUESTS.INVALID_FORMAT })
+  @Min(GUEST.MIN_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.NUMBER_OF_GUESTS.MIN_VALUE })
+  @Max(GUEST.MAX_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.NUMBER_OF_GUESTS.MAX_VALUE })
     numberOfGuests?: number;
 
   @IsOptional()
-  @IsInt({ message: OFFER_VALIDATION_MESSAGES.price.invalidFormat })
-  @Min(MIN_PRICE, { message: OFFER_VALIDATION_MESSAGES.price.minValue })
-  @Max(MAX_PRICE, { message: OFFER_VALIDATION_MESSAGES.price.maxValue })
+  @IsInt({ message: OFFER_VALIDATION_MESSAGES.PRICE.INVALID_FORMAT })
+  @Min(PRICE.LOWEST, { message: OFFER_VALIDATION_MESSAGES.PRICE.MIN_VALUE })
+  @Max(PRICE.HIGHEST, { message: OFFER_VALIDATION_MESSAGES.PRICE.MAX_VALUE })
     price?: string;
 
   @IsOptional()
-  @IsArray({ message: OFFER_VALIDATION_MESSAGES.commodities.invalidFormat })
-  @IsEnum(CommodityEnum, { each: true, message: OFFER_VALIDATION_MESSAGES.commodities.invalid })
+  @IsArray({ message: OFFER_VALIDATION_MESSAGES.COMMODITIES.INVALID_FORMAT })
+  @IsEnum(CommodityEnum, { each: true, message: OFFER_VALIDATION_MESSAGES.COMMODITIES.INVALID })
     commodities?: Commodity[];
 
   @IsOptional()

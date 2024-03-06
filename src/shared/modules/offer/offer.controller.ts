@@ -9,14 +9,14 @@ import {
   DocumentExistsMiddleware,
   PrivateRouteMiddleware, RequestBody, UploadFileMiddleware,
 } from '../../libs/rest/index.js';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { fillDTO } from '../../helpers/support-functions.js';
 import { OfferRdo } from './rdo/offer.rdo.js';
 import { CreateOfferRequest } from './create-offer-request.type.js';
 import { UpdateOfferRequest } from './update-offer-request.type.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { ALLOWED_IMAGE_TYPES, MAX_PREMIUM_OFFERS_QUANTITY, PHOTOS_QUANTITY } from '../../constants/offer.constants.js';
+import { ALLOWED_IMAGE_TYPES, OFFER, PHOTO } from '../../constants/offer.constants.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { FavoriteOfferDto } from './dto/favorite-offer.dto.js';
 import { ParamOfferId } from './type/param-offerid.type.js';
@@ -32,10 +32,10 @@ import { UploadImagesRdo } from '../user/rdo/upload-images.rdo.js';
 @injectable()
 export class OfferController extends BaseController {
   constructor(
-    @inject(Component.Logger) protected readonly logger: Logger,
-    @inject(Component.OfferService) private readonly offerService: OfferService,
-    @inject(Component.CommentService) private readonly commentService: CommentService,
-    @inject(Component.Config) private readonly configService: Config<RestSchema>,
+    @inject(COMPONENT.LOGGER) protected readonly logger: Logger,
+    @inject(COMPONENT.OFFER_SERVICE) private readonly offerService: OfferService,
+    @inject(COMPONENT.COMMENT_SERVICE) private readonly commentService: CommentService,
+    @inject(COMPONENT.CONFIG) private readonly configService: Config<RestSchema>,
   ) {
     super(logger);
     this.setRoutes();
@@ -89,7 +89,7 @@ export class OfferController extends BaseController {
       ]
     });
     this.addRoute({
-      path: '/premium',
+      path: '/premium/:location',
       method: HttpMethod.Get,
       handler: this.getPremiumOffers
     });
@@ -142,28 +142,28 @@ export class OfferController extends BaseController {
         new ValidateUserMiddleware(this.offerService, 'Offer', 'offerId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image',
           ALLOWED_IMAGE_TYPES,
-          PHOTOS_QUANTITY
+          PHOTO.QUANTITY
         )
       ]
     });
   }
 
   async index({ query, tokenPayload }: Request, res: Response): Promise<void> {
-    const limit = Number.parseInt(query.limit as string, 10);
+    const limit = query?.limit ? Number.parseInt(query.limit as string, 10) : undefined;
     const offers = await this.offerService.getAllOffers(tokenPayload?.id, limit);
-    this.ok(res, fillDTO(OfferRdo, offers));
+    this.returnOkStatus(res, fillDTO(OfferRdo, offers));
   }
 
   async create({ body, tokenPayload }: CreateOfferRequest, res: Response): Promise<void> {
     const offer = await this.offerService.createOffer({ ...body, userId: tokenPayload.id });
-    this.created(res, fillDTO(OfferRdo, offer));
+    this.returnCreatedStatus(res, fillDTO(OfferRdo, offer));
   }
 
   async show({ params: { offerId }, tokenPayload }: Request<ParamOfferId>,
     res: Response
   ): Promise<void> {
     const offer = await this.offerService.findOfferById(tokenPayload?.id, offerId);
-    this.ok(res, fillDTO(OfferRdo, offer));
+    this.returnOkStatus(res, fillDTO(OfferRdo, offer));
   }
 
   async update(
@@ -172,28 +172,28 @@ export class OfferController extends BaseController {
     await this.offerService.updateOffer(params.offerId, body);
     const updatedOffer = await this.offerService.findOfferById(tokenPayload.id, params.offerId);
 
-    this.ok(res, fillDTO(OfferRdo, updatedOffer));
+    this.returnOkStatus(res, fillDTO(OfferRdo, updatedOffer));
   }
 
   async delete({ params }: Request, res: Response): Promise<void> {
     const { offerId } = params;
     await this.offerService.deleteOfferById(offerId);
     await this.commentService.deleteCommentByOfferId(offerId);
-    this.noContent(res, null);
+    this.returnNoContentStatus(res, null);
   }
 
-  async getPremiumOffers({ query, tokenPayload }: Request, res: Response): Promise<void> {
+  async getPremiumOffers({ params, tokenPayload }: Request, res: Response): Promise<void> {
     const offers = await this.offerService.getPremiumOffersByLocation(
       tokenPayload?.id,
-      query.location as string,
-      MAX_PREMIUM_OFFERS_QUANTITY
+      params.location,
+      OFFER.MAX_PREMIUM_QUANTITY
     );
-    this.ok(res, fillDTO(OfferRdo, offers));
+    this.returnOkStatus(res, fillDTO(OfferRdo, offers));
   }
 
   async getFavoriteOffers({ tokenPayload: { id } }: Request, res: Response): Promise<void> {
     const offers = await this.offerService.getAllFavoriteOffersByUser(id);
-    this.ok(res, fillDTO(OfferRdo, offers));
+    this.returnOkStatus(res, fillDTO(OfferRdo, offers));
   }
 
   async toggleFavorites(
@@ -205,15 +205,17 @@ export class OfferController extends BaseController {
 
     const offer = await this.offerService.toggleFavorites(userId, offerId, body.isFavorite);
 
-    this.ok(res, {
+    this.returnOkStatus(res, {
       isFavorite: offer,
     });
   }
 
   async getComments(
-    { params }: Request<ParamOfferId>,res: Response): Promise<void> {
+    { params }: Request<ParamOfferId>,
+    res: Response
+  ): Promise<void> {
     const comments = await this.commentService.findCommentsByOfferId(params.offerId);
-    this.ok(res, fillDTO(CommentRdo, comments));
+    this.returnOkStatus(res, fillDTO(CommentRdo, comments));
   }
 
   async createComment({ body, tokenPayload }: CreateCommentRequest, res: Response): Promise<void> {
@@ -226,7 +228,7 @@ export class OfferController extends BaseController {
 
     const comment = await this.commentService.createComment({ ...body, userId: tokenPayload.id });
 
-    this.created(res, fillDTO(CommentRdo, comment));
+    this.returnCreatedStatus(res, fillDTO(CommentRdo, comment));
   }
 
   async uploadImages({ params, files }: Request<ParamOfferId>, res: Response) {
@@ -238,6 +240,6 @@ export class OfferController extends BaseController {
       photos: files?.map((file) => file.filename) ?? []
     };
     await this.offerService.updateOffer(offerId, updateDto);
-    this.created(res, fillDTO(UploadImagesRdo, updateDto));
+    this.returnCreatedStatus(res, fillDTO(UploadImagesRdo, updateDto));
   }
 }

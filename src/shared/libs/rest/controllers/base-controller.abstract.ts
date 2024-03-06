@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import asyncHandler from 'express-async-handler';
 import { Logger } from '../../../interfaces/logger.interface.js';
 import { Route } from '../index.js';
-import { Component } from '../../../types/component.enum.js';
+import { COMPONENT } from '../../../types/component.enum.js';
 import { PathTransformer } from '../transform/path-transformer.js';
 
 const DEFAULT_CONTENT_TYPE = 'application/json';
@@ -14,7 +14,7 @@ const DEFAULT_CONTENT_TYPE = 'application/json';
 export abstract class BaseController implements Controller {
   private readonly _router: Router;
 
-  @inject(Component.PathTransformer) private pathTransformer: PathTransformer;
+  @inject(COMPONENT.PATH_TRANSFORMER) private pathTransformer: PathTransformer;
 
   constructor(
     protected readonly logger: Logger
@@ -44,15 +44,15 @@ export abstract class BaseController implements Controller {
       .json(modifiedData);
   }
 
-  created<T>(res: Response, data: T): void {
+  returnCreatedStatus<T>(res: Response, data: T): void {
     this.send(res, StatusCodes.CREATED, data);
   }
 
-  noContent<T>(res: Response, data: T): void {
+  returnNoContentStatus<T>(res: Response, data: T): void {
     this.send(res, StatusCodes.NO_CONTENT, data);
   }
 
-  ok<T>(res: Response, data: T): void {
+  returnOkStatus<T>(res: Response, data: T): void {
     this.send(res, StatusCodes.OK, data);
   }
 }

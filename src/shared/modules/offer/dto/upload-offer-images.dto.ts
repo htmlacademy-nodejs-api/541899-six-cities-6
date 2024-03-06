@@ -1,4 +1,4 @@
 export class UploadOfferImagesDto {
   previewImage?: string;
-  housingPhotos?: string[];
+  photos?: string[];
 }

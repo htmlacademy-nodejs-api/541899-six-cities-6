@@ -2,30 +2,30 @@ import { Logger } from '../shared/interfaces/logger.interface.js';
 import { Config } from '../shared/interfaces/config.interface.js';
 import { RestSchema } from '../shared/libs/config/rest.schema.js';
 import { inject, injectable } from 'inversify';
-import { Component } from '../shared/types/component.enum.js';
+import { COMPONENT } from '../shared/types/component.enum.js';
 import { DatabaseClient } from '../shared/interfaces/database-client.interface.js';
 import { getMongoURI } from '../shared/helpers/database.js';
 import express, { Express } from 'express';
 import { Controller, ParseTokenMiddleware } from '../shared/libs/rest/index.js';
 import { ExceptionFilter } from '../shared/libs/rest/index.js';
 import cors from 'cors';
-import { STATIC_UPLOAD_ROUTE } from './rest.contstant.js';
 import { getFullServerPath } from '../shared/helpers/support-functions.js';
+import { STATIC_UPLOAD_ROUTE } from './index.js';
 
 @injectable()
 export class RestApplication {
   private readonly server: Express;
 
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger,
-    @inject(Component.Config) private readonly config: Config<RestSchema>,
-    @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
-    @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
-    @inject(Component.UserController) private readonly userController: Controller,
-    @inject(Component.OfferController) private readonly offerController: Controller,
-    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
-    @inject(Component.HttpExceptionFilter) private readonly httpExceptionFilter: ExceptionFilter,
-    @inject(Component.ValidationExceptionFilter) private readonly validationExceptionFilter: ExceptionFilter,
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger,
+    @inject(COMPONENT.CONFIG) private readonly config: Config<RestSchema>,
+    @inject(COMPONENT.DATABASE_CLIENT) private readonly databaseClient: DatabaseClient,
+    @inject(COMPONENT.EXCEPTION_FILTER) private readonly appExceptionFilter: ExceptionFilter,
+    @inject(COMPONENT.USER_CONTROLLER) private readonly userController: Controller,
+    @inject(COMPONENT.OFFER_CONTROLLER) private readonly offerController: Controller,
+    @inject(COMPONENT.AUTH_EXCEPTION_FILTER) private readonly authExceptionFilter: ExceptionFilter,
+    @inject(COMPONENT.HTTP_EXCEPTION_FILTER) private readonly httpExceptionFilter: ExceptionFilter,
+    @inject(COMPONENT.VALIDATION_EXCEPTION_FILTER) private readonly validationExceptionFilter: ExceptionFilter,
   ) {
     this.server = express();
   }

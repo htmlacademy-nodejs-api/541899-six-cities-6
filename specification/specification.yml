@@ -125,10 +125,10 @@ components:
           type: string
           example: 123456
           required: true
-        userType:
+        type:
           type: string
           enum:
-            - обычный
+            - basic
             - pro
           required: true
           example: pro
@@ -149,10 +149,10 @@ components:
           example: Keks
         avatar:
           type: string
-        userType:
+        type:
           type: string
           enum:
-            - обычный
+            - basic
             - pro
 
     authorizedUser:

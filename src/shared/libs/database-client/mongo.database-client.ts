@@ -2,11 +2,9 @@ import * as Mongoose from 'mongoose';
 import { inject, injectable } from 'inversify';
 import { setTimeout } from 'node:timers/promises';
 import { DatabaseClient } from '../../interfaces/database-client.interface.js';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
-
-const RETRY_COUNT = 5;
-const RETRY_TIMEOUT = 1000;
+import { DATABASE } from './database.constants.js';
 
 @injectable()
 export class MongoDatabaseClient implements DatabaseClient {
@@ -14,17 +12,17 @@ export class MongoDatabaseClient implements DatabaseClient {
   private isConnected: boolean;
 
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger,
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger,
   ) {
     this.isConnected = false;
   }
 
-  isConnectedToDatabase() {
+  checkIsConnectedToDatabase() {
     return this.isConnected;
   }
 
   async connect(uri: string): Promise<void> {
-    if (this.isConnectedToDatabase()) {
+    if (this.checkIsConnectedToDatabase()) {
       throw new Error('MongoDB client is already connected');
     }
 
@@ -32,7 +30,7 @@ export class MongoDatabaseClient implements DatabaseClient {
 
     let attempt = 0;
 
-    while (attempt < RETRY_COUNT) {
+    while (attempt < DATABASE.RETRY_COUNT) {
       try {
         this.mongoose = await Mongoose.connect(uri);
         this.isConnected = true;
@@ -41,15 +39,15 @@ export class MongoDatabaseClient implements DatabaseClient {
       } catch (error) {
         attempt++;
         this.logger.info(`Error while trying to connect to DB. Attempt #${attempt}`, error as Error);
-        await setTimeout(RETRY_TIMEOUT);
+        await setTimeout(DATABASE.RETRY_TIMEOUT);
       }
     }
 
-    throw new Error(`Failed to establish connection after ${RETRY_COUNT} tries`);
+    throw new Error(`Failed to establish connection after ${DATABASE.RETRY_COUNT} tries`);
   }
 
   async disconnect(): Promise<void> {
-    if (!this.isConnectedToDatabase()) {
+    if (!this.checkIsConnectedToDatabase()) {
       throw new Error('No DB connection');
     }
 

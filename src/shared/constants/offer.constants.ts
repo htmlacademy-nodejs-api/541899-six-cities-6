@@ -20,3 +20,8 @@ export const PHOTOS_QUANTITY = 6;
 
 export const MAX_OFFERS_QUANTITY = 60;
 export const MAX_PREMIUM_OFFERS_QUANTITY = 3;
+
+export const ALLOWED_IMAGE_TYPES = [
+  'image/png',
+  'image/jpg'
+];

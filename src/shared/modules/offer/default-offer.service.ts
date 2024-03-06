@@ -9,7 +9,7 @@ import mongoose, { Types } from 'mongoose';
 import { UserEntity } from '../user/user.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { StatusCodes } from 'http-status-codes';
-import { HttpError } from '../../libs/rest/errors/http-error.js';
+import { HttpError } from '../../libs/rest/errors/http.error.js';
 import { authorPipeline, commentsPipeline, defaultPipeline, getPipeline } from './offer.aggregation.js';
 
 @injectable()
@@ -65,7 +65,7 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  public updateOffer(
+  updateOffer(
     offerId: string,
     dto: UpdateOfferDto
   ): Promise<DocumentType<OfferEntity> | null> {

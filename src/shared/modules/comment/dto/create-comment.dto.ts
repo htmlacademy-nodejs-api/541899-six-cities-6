@@ -1,7 +1,7 @@
 import { IsInt, IsMongoId, IsString, Length, Max, Min } from 'class-validator';
 import { MAX_COMMENT_LENGTH, MIN_COMMENT_LENGTH } from '../../../constants/comment.constants.js';
 import { HIGHEST_RATING, LOWEST_RATING } from '../../../constants/offer.constants.js';
-import { CreateCommentMessages } from '../index.js';
+import { CreateCommentMessages } from './create-comment.messages.js';
 
 export class CreateCommentDto {
   @IsString({ message: CreateCommentMessages.text.invalidFormat })

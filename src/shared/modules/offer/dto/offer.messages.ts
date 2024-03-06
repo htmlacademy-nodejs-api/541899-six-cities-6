@@ -5,7 +5,7 @@ import {
   MIN_NAME_LENGTH, MIN_PRICE, MIN_ROOM_QUANTITY, PHOTOS_QUANTITY,
 } from '../../../constants/offer.constants.js';
 
-export const OfferValidationMessage = {
+export const OFFER_VALIDATION_MESSAGES = {
   name: {
     minLength: `Min name length is ${MIN_NAME_LENGTH} characters`,
     maxLength: `Max name length is ${MAX_NAME_LENGTH} characters`,

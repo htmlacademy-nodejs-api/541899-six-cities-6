@@ -4,17 +4,14 @@ import { getOfferFromString } from '../../shared/helpers/offer-formating-functio
 import { getMongoURI } from '../../shared/helpers/database.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.contstants.js';
 import { UserModel } from '../../shared/modules/user/user.entity.js';
-import { UserService } from '../../shared/modules/user/user-service.interface.js';
-import { DefaultUserService } from '../../shared/modules/user/default-user.service.js';
+import { UserService, DefaultUserService } from '../../shared/modules/user/index.js';
 import { MongoDatabaseClient } from '../../shared/libs/database-client/mongo.database-client.js';
 import { DatabaseClient } from '../../shared/interfaces/database-client.interface.js';
 import { TsvFileReader } from '../../shared/libs/file-reader/tsv-file-reader.js';
 import { Logger } from '../../shared/interfaces/logger.interface.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { DefaultOfferService, OfferModel, OfferService } from '../../shared/modules/offer/index.js';
-import { HIGHEST_RATING } from '../../shared/constants/offer.constants.js';
 import { Offer } from '../../shared/types/offer.type.js';
-import { MIN_COMMENTS_QUANTITY } from '../../shared/constants/comment.constants.js';
 
 export class ImportCommand implements Command {
   private userService: UserService;
@@ -85,14 +82,12 @@ export class ImportCommand implements Command {
       previewImage: offer.previewImage,
       photos: offer.photos,
       isPremium: offer.isPremium,
-      rating: HIGHEST_RATING,
       type: offer.type,
       numberOfRooms: offer.numberOfRooms,
       numberOfGuests: offer.numberOfGuests,
       price: offer.price,
       commodities: offer.commodities,
       userId: user.id,
-      numberOfComments: MIN_COMMENTS_QUANTITY,
       coordinates: offer.coordinates,
     });
   }

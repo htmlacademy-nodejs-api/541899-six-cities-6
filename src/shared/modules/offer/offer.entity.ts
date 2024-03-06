@@ -12,8 +12,7 @@ import { UserEntity } from '../user/user.entity.js';
 import { Commodity, Location, OfferType } from '../../types/offer.type.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export interface OfferEntity extends defaultClasses.Base {
-}
+export interface OfferEntity extends defaultClasses.Base {}
 
 @modelOptions({
   options: {

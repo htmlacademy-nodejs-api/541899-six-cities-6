@@ -1,17 +1,17 @@
 import { DocumentType, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { UserEntity } from './user.entity.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UserService } from './user-service.interface.js';
-import { DEFAULT_AVATAR_FILE_NAME } from './user.contstant.js';
+import { DEFAULT_AVATAR_FILE_NAME } from './user.constant.js';
 
 @injectable()
 export class DefaultUserService implements UserService {
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger,
-    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger,
+    @inject(COMPONENT.USER_MODEL) private readonly userModel: types.ModelType<UserEntity>,
   ) {
   }
 
@@ -47,31 +47,5 @@ export class DefaultUserService implements UserService {
     return this.userModel.findByIdAndUpdate(userId, dto, {new: true})
       .populate(['favorites'])
       .exec();
-  }
-
-  async addOfferToFavourites(userId: string, offerId: string): Promise<DocumentType<UserEntity> | null> {
-    try {
-      return await this.userModel.findByIdAndUpdate(
-        userId,
-        { $push: { favorites: offerId } },
-        { new: true }
-      );
-    } catch (error) {
-      this.logger.info('Error adding offer to favorites');
-      return null;
-    }
-  }
-
-  async removeOfferFromFavourites(userId: string, offerId: string): Promise<DocumentType<UserEntity> | null> {
-    try {
-      return await this.userModel.findByIdAndUpdate(
-        userId,
-        { $pull: { favorites: offerId } },
-        { new: true }
-      );
-    } catch (error) {
-      this.logger.info('Error removing offer from favorites:');
-      return null;
-    }
   }
 }

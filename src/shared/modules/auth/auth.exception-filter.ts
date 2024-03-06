@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { ExceptionFilter } from '../../libs/rest/index.js';
 import { NextFunction, Request, Response } from 'express';
@@ -10,7 +10,7 @@ import { ApplicationError } from '../../libs/rest/types/application-error.enum.j
 @injectable()
 export class AuthExceptionFilter implements ExceptionFilter {
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger
   ) {
     this.logger.info('Register AuthExceptionFilter');
   }

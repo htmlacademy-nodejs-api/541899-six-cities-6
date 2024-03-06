@@ -8,7 +8,7 @@ import { CreateUserRequest } from './create-user-request.type.js';
 import { BaseController, HttpMethod, UploadFileMiddleware, ValidateDtoMiddleware, PrivateRouteMiddleware } from '../../libs/rest/index.js';
 import { Config } from '../../interfaces/config.interface.js';
 import { RestSchema } from '../../libs/config/rest.schema.js';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { HttpError } from '../../libs/rest/errors/http.error.js';
 import { fillDTO } from '../../helpers/support-functions.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -17,15 +17,15 @@ import { LoginUserRequest } from './login-user-request.type.js';
 import { AuthService } from '../auth/index.js';
 import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
 import { UploadUserAvatarRdo } from './rdo/upload-user-avatar.rdo.js';
-import { ALLOWED_AVATAR_IMAGE_TYPES } from './user.contstant.js';
+import { ALLOWED_AVATAR_IMAGE_TYPES } from './user.constant.js';
 
 @injectable()
 export class UserController extends BaseController {
   constructor(
-    @inject(Component.Logger) protected readonly logger: Logger,
-    @inject(Component.UserService) private readonly userService: UserService,
-    @inject(Component.Config) private readonly configService: Config<RestSchema>,
-    @inject(Component.AuthService) private readonly authService: AuthService
+    @inject(COMPONENT.LOGGER) protected readonly logger: Logger,
+    @inject(COMPONENT.USER_SERVICE) private readonly userService: UserService,
+    @inject(COMPONENT.CONFIG) private readonly configService: Config<RestSchema>,
+    @inject(COMPONENT.AUTH_SERVICE) private readonly authService: AuthService
   ) {
     super(logger);
     this.addRoutes();
@@ -67,13 +67,13 @@ export class UserController extends BaseController {
     if (isExistingUser) {
       throw new HttpError(
         StatusCodes.CONFLICT,
-        `User with email «${body.email}» exists`,
+        `User with email "${body.email}" already exists`,
         'UserController'
       );
     }
 
     const result = await this.userService.create(body, this.configService.get('SALT'));
-    this.created(res, fillDTO(UserRdo, result));
+    this.returnCreatedStatus(res, fillDTO(UserRdo, result));
   }
 
   async login(
@@ -83,7 +83,7 @@ export class UserController extends BaseController {
     const user = await this.authService.verify(body);
     const token = await this.authService.authenticate(user);
     const responseData = fillDTO(LoggedUserRdo, user);
-    this.ok(res, Object.assign(responseData, { token }));
+    this.returnOkStatus(res, Object.assign(responseData, { token }));
   }
 
   async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response): Promise<void> {
@@ -97,12 +97,12 @@ export class UserController extends BaseController {
       );
     }
 
-    this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
+    this.returnOkStatus(res, fillDTO(LoggedUserRdo, foundedUser));
   }
 
   async uploadAvatar({ tokenPayload: { id }, file }: Request, res: Response) {
     const uploadedFile = { avatar: file?.filename };
     await this.userService.updateById(id, uploadedFile);
-    this.created(res, fillDTO(UploadUserAvatarRdo, { filepath: uploadedFile.avatar }));
+    this.returnCreatedStatus(res, fillDTO(UploadUserAvatarRdo, { filepath: uploadedFile.avatar }));
   }
 }

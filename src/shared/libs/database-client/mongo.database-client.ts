@@ -2,7 +2,7 @@ import * as Mongoose from 'mongoose';
 import { inject, injectable } from 'inversify';
 import { setTimeout } from 'node:timers/promises';
 import { DatabaseClient } from '../../interfaces/database-client.interface.js';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 
 const RETRY_COUNT = 5;
@@ -14,17 +14,17 @@ export class MongoDatabaseClient implements DatabaseClient {
   private isConnected: boolean;
 
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger,
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger,
   ) {
     this.isConnected = false;
   }
 
-  isConnectedToDatabase() {
+  checkIsConnectedToDatabase() {
     return this.isConnected;
   }
 
   async connect(uri: string): Promise<void> {
-    if (this.isConnectedToDatabase()) {
+    if (this.checkIsConnectedToDatabase()) {
       throw new Error('MongoDB client is already connected');
     }
 
@@ -49,7 +49,7 @@ export class MongoDatabaseClient implements DatabaseClient {
   }
 
   async disconnect(): Promise<void> {
-    if (!this.isConnectedToDatabase()) {
+    if (!this.checkIsConnectedToDatabase()) {
       throw new Error('No DB connection');
     }
 

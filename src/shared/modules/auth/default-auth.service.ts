@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
 import { UserService } from '../user/index.js';
 import { Config } from '../../interfaces/config.interface.js';
@@ -16,9 +16,9 @@ import { AuthService } from './index.js';
 @injectable()
 export class DefaultAuthService implements AuthService {
   constructor(
-    @inject(Component.Logger) private readonly logger: Logger,
-    @inject(Component.UserService) private readonly userService: UserService,
-    @inject(Component.Config) private readonly config: Config<RestSchema>,
+    @inject(COMPONENT.LOGGER) private readonly logger: Logger,
+    @inject(COMPONENT.USER_SERVICE) private readonly userService: UserService,
+    @inject(COMPONENT.CONFIG) private readonly config: Config<RestSchema>,
   ) {}
 
   async authenticate(user: UserEntity): Promise<string> {

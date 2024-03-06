@@ -17,7 +17,7 @@ export type RestSchema = {
   STATIC_DIRECTORY_PATH: string;
 }
 
-export const configRestSchema = convict<RestSchema>({
+export const CONFIG_REST_SCHEMA = convict<RestSchema>({
   PORT: {
     doc: 'Port for incoming connections',
     format: 'port',

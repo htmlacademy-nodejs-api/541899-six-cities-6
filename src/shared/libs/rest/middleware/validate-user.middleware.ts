@@ -14,7 +14,7 @@ export class ValidateUserMiddleware implements Middleware {
   async execute({ params, tokenPayload}: Request, _res: Response, next: NextFunction): Promise<void> {
     const documentId = params[this.paramName];
 
-    if (!(await this.offerService.isAuthor(tokenPayload.id, documentId))) {
+    if (!(await this.offerService.checkIsAuthor(tokenPayload.id, documentId))) {
       throw new HttpError(
         StatusCodes.FORBIDDEN,
         `Action is forbidden for ${this.entityName}`,

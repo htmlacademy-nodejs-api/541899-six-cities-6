@@ -5,7 +5,7 @@ export interface Controller {
   readonly router: Router;
   addRoute(route: Route): void;
   send<T>(res: Response, statusCode: number, data: T): void;
-  ok<T>(res: Response, data: T): void;
-  created<T>(res: Response, data: T): void;
-  noContent<T>(res: Response, data: T): void;
+  returnOkStatus<T>(res: Response, data: T): void;
+  returnCreatedStatus<T>(res: Response, data: T): void;
+  returnNoContentStatus<T>(res: Response, data: T): void;
 }

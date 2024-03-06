@@ -1,5 +1,5 @@
 import { Container } from 'inversify';
-import { Component } from '../shared/types/component.enum.js';
+import { COMPONENT } from '../shared/types/component.enum.js';
 import { Logger } from '../shared/interfaces/logger.interface.js';
 import { Config } from '../shared/interfaces/config.interface.js';
 import { RestSchema } from '../shared/libs/config/rest.schema.js';
@@ -15,14 +15,14 @@ import { HttpErrorExceptionFilter } from '../shared/libs/rest/exception-filter/h
 export function createRestApplicationContainer() {
   const restApplicationContainer = new Container();
 
-  restApplicationContainer.bind<RestApplication>(Component.RestApplication).to(RestApplication).inSingletonScope();
-  restApplicationContainer.bind<Logger>(Component.Logger).to(PinoLogger).inSingletonScope();
-  restApplicationContainer.bind<Config<RestSchema>>(Component.Config).to(RestConfig).inSingletonScope();
-  restApplicationContainer.bind<DatabaseClient>(Component.DatabaseClient).to(MongoDatabaseClient).inSingletonScope();
-  restApplicationContainer.bind<ExceptionFilter>(Component.ExceptionFilter).to(AppExceptionFilter).inSingletonScope();
-  restApplicationContainer.bind<ExceptionFilter>(Component.HttpExceptionFilter).to(HttpErrorExceptionFilter).inSingletonScope();
-  restApplicationContainer.bind<ExceptionFilter>(Component.ValidationExceptionFilter).to(ValidationExceptionFilter).inSingletonScope();
-  restApplicationContainer.bind<PathTransformer>(Component.PathTransformer).to(PathTransformer).inSingletonScope();
+  restApplicationContainer.bind<RestApplication>(COMPONENT.REST_APPLICATION).to(RestApplication).inSingletonScope();
+  restApplicationContainer.bind<Logger>(COMPONENT.LOGGER).to(PinoLogger).inSingletonScope();
+  restApplicationContainer.bind<Config<RestSchema>>(COMPONENT.CONFIG).to(RestConfig).inSingletonScope();
+  restApplicationContainer.bind<DatabaseClient>(COMPONENT.DATABASE_CLIENT).to(MongoDatabaseClient).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(COMPONENT.EXCEPTION_FILTER).to(AppExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(COMPONENT.HTTP_EXCEPTION_FILTER).to(HttpErrorExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(COMPONENT.VALIDATION_EXCEPTION_FILTER).to(ValidationExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<PathTransformer>(COMPONENT.PATH_TRANSFORMER).to(PathTransformer).inSingletonScope();
 
   return restApplicationContainer;
 }

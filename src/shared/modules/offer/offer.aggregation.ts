@@ -21,34 +21,33 @@ export const getUserPipeline = (userId: string) => [
 ];
 
 
-export const defaultPipeline = [
+export const DEFAULT_PIPELINE = [
   {
     $project: {
       _id: 0,
       id: { $toString: '$_id' },
-      author: 1,
-      city: 1,
-      averageRating: { $ifNull: [{ $avg: '$comments.rating' }, 0] },
+      user: 1,
+      location: 1,
+      rating: { $ifNull: [{ $avg: '$comments.rating' }, 0] },
       favorites: { $in: ['$_id', { $ifNull: ['$user.favorites', []] }] },
       totalComments: { $size: '$comments' },
       previewImage: 1,
-      publicationDate: 1,
-      premium: 1,
-      rentalCost: 1,
+      date: 1,
+      isPremium: 1,
+      price: 1,
       title: 1,
       description: 1,
-      location: 1,
-      housingPhotos: 1,
-      facilities: 1,
-      apartmentType: 1,
-      roomAmount: 1,
-      guestAmount: 1,
+      photos: 1,
+      commodities: 1,
+      type: 1,
+      numberOfRooms: 1,
+      numberOfGuests: 1,
     },
   },
 ];
 
 
-export const commentsPipeline = [
+export const COMMENTS_PIPELINE = [
   {
     $lookup: {
       from: 'comments',
@@ -62,7 +61,7 @@ export const commentsPipeline = [
   },
 ];
 
-export const authorPipeline = [
+export const AUTHOR_PIPELINE = [
   {
     $lookup: {
       from: 'users',
@@ -85,9 +84,9 @@ export const getPipeline = (userId?: string) => {
   const userPipeline = userId ? getUserPipeline(userId) : [];
 
   return [
-    ...commentsPipeline,
-    ...authorPipeline,
+    ...COMMENTS_PIPELINE,
+    ...AUTHOR_PIPELINE,
     ...userPipeline,
-    ...defaultPipeline,
+    ...DEFAULT_PIPELINE,
   ];
 };

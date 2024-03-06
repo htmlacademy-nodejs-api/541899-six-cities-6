@@ -2,7 +2,7 @@ import { Command } from '../interfaces/command.interface.js';
 import { paintText } from '../../shared/helpers/support-functions.js';
 import { getOfferFromString } from '../../shared/helpers/offer-formating-functions.js';
 import { getMongoURI } from '../../shared/helpers/database.js';
-import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.contstants.js';
+import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constants.js';
 import { UserModel } from '../../shared/modules/user/user.entity.js';
 import { UserService, DefaultUserService } from '../../shared/modules/user/index.js';
 import { MongoDatabaseClient } from '../../shared/libs/database-client/mongo.database-client.js';
@@ -21,8 +21,8 @@ export class ImportCommand implements Command {
   private salt: string;
 
   constructor() {
-    this.onImportedLine = this.onImportedLine.bind(this);
-    this.onCompleteImport = this.onCompleteImport.bind(this);
+    this.handleLineImport = this.handleLineImport.bind(this);
+    this.handleImportCompletion = this.handleImportCompletion.bind(this);
 
     this.logger = new ConsoleLogger();
     this.userService = new DefaultUserService(this.logger, UserModel);
@@ -43,8 +43,8 @@ export class ImportCommand implements Command {
 
     const fileReader = new TsvFileReader(filename.trim());
 
-    fileReader.on('lineCompleted', this.onImportedLine);
-    fileReader.on('end', this.onCompleteImport);
+    fileReader.on('lineCompleted', this.handleLineImport);
+    fileReader.on('end', this.handleImportCompletion);
 
     try {
       await fileReader.read();
@@ -58,13 +58,13 @@ export class ImportCommand implements Command {
     }
   }
 
-  private async onImportedLine(line: string, resolve: () => void) {
+  private async handleLineImport(line: string, resolve: () => void) {
     const offer = getOfferFromString(line);
     await this.createOffer(offer);
     resolve();
   }
 
-  private onCompleteImport(count: number) {
+  private handleImportCompletion(count: number) {
     console.log(paintText('content', `Has imported ${count} rows`));
   }
 

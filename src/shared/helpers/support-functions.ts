@@ -5,7 +5,7 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { ValidationErrorField } from '../libs/rest/types/validation-error-field.type.js';
 import { ApplicationError } from '../libs/rest/types/application-error.enum.js';
 
-export function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
+export function checkIsPackageJSONConfig(value: unknown): value is PackageJSONConfig {
   return (
     typeof value === 'object' &&
       value !== null &&
@@ -51,18 +51,10 @@ export function paintText(textType: 'header' | 'subheader' | 'content' | 'error'
     case 'error':
       return appColors.errorColor(text);
   }
-
-  throw new Error('Didn\'t expect to get here');
 }
 
 export function generateRandomValue(min: number, max: number, numAfterDigit = 0) {
   return +((Math.random() * (max - min)) + min).toFixed(numAfterDigit);
-}
-
-export function getRandomItems<T>(items: T[]): T[] {
-  const startPosition = generateRandomValue(0, items.length - 1);
-  const endPosition = startPosition + generateRandomValue(startPosition, items.length);
-  return items.slice(startPosition, endPosition);
 }
 
 export function getRandomItem<T>(items: T[]): T {

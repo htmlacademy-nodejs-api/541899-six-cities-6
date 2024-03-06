@@ -1,13 +1,13 @@
 import { Container } from 'inversify';
-import { Component } from '../../types/component.enum.js';
+import { COMPONENT } from '../../types/component.enum.js';
 import { types } from '@typegoose/typegoose';
 import { CommentService, CommentEntity, CommentModel, DefaultCommentService } from './index.js';
 
 export function createCommentContainer() {
   const commentContainer = new Container();
 
-  commentContainer.bind<CommentService>(Component.CommentService).to(DefaultCommentService).inSingletonScope();
-  commentContainer.bind<types.ModelType<CommentEntity>>(Component.CommentModel).toConstantValue(CommentModel);
+  commentContainer.bind<CommentService>(COMPONENT.COMMENT_SERVICE).to(DefaultCommentService).inSingletonScope();
+  commentContainer.bind<types.ModelType<CommentEntity>>(COMPONENT.COMMENT_MODEL).toConstantValue(CommentModel);
 
   return commentContainer;
 }

@@ -9,7 +9,7 @@ import {
   MIN_ROOM_QUANTITY,
 } from '../../constants/offer.constants.js';
 import { UserEntity } from '../user/user.entity.js';
-import { Commodity, LocationEnum, OfferType } from '../../types/offer.type.js';
+import { Commodity, Location, OfferType } from '../../types/offer.type.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {
@@ -49,10 +49,9 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     type: String,
-    enum: LocationEnum,
     required: true,
   })
-    location: string;
+    location: Location;
 
   @prop({
     type: String,

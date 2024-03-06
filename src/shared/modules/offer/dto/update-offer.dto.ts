@@ -21,62 +21,62 @@ import {
   MIN_ROOM_QUANTITY,
   PHOTOS_QUANTITY,
 } from '../../../constants/offer.constants.js';
-import { OfferValidationMessage } from '../index.js';
+import { OFFER_VALIDATION_MESSAGES } from './offer.messages.js';
 
 export class UpdateOfferDto {
   @IsOptional()
-  @MinLength(MIN_NAME_LENGTH, { message: OfferValidationMessage.name.minLength})
-  @MaxLength(MAX_NAME_LENGTH, {message: OfferValidationMessage.name.maxLength})
+  @MinLength(MIN_NAME_LENGTH, { message: OFFER_VALIDATION_MESSAGES.name.minLength})
+  @MaxLength(MAX_NAME_LENGTH, {message: OFFER_VALIDATION_MESSAGES.name.maxLength})
     name?: string;
 
   @IsOptional()
-  @MinLength(MIN_DESCRIPTION_LENGTH, { message: OfferValidationMessage.description.minLength })
-  @MaxLength(MAX_DESCRIPTION_LENGTH, { message: OfferValidationMessage.description.maxLength })
+  @MinLength(MIN_DESCRIPTION_LENGTH, { message: OFFER_VALIDATION_MESSAGES.description.minLength })
+  @MaxLength(MAX_DESCRIPTION_LENGTH, { message: OFFER_VALIDATION_MESSAGES.description.maxLength })
     description?: string;
 
   @IsOptional()
-  @IsEnum(LocationEnum, { message: OfferValidationMessage.location.invalid })
+  @IsEnum(LocationEnum, { message: OFFER_VALIDATION_MESSAGES.location.invalid })
     location?: Location;
 
   @IsOptional()
-  @IsString({ message: OfferValidationMessage.previewImage.invalidFormat })
+  @IsString({ message: OFFER_VALIDATION_MESSAGES.previewImage.invalidFormat })
     previewImage?: string;
 
   @IsOptional()
-  @IsArray({ message: OfferValidationMessage.photos.invalidFormat })
-  @ArrayMinSize(PHOTOS_QUANTITY, { each: true, message: OfferValidationMessage.photos.invalidLength })
-  @ArrayMaxSize(PHOTOS_QUANTITY, { each: true, message: OfferValidationMessage.photos.invalidLength })
+  @IsArray({ message: OFFER_VALIDATION_MESSAGES.photos.invalidFormat })
+  @ArrayMinSize(PHOTOS_QUANTITY, { each: true, message: OFFER_VALIDATION_MESSAGES.photos.invalidLength })
+  @ArrayMaxSize(PHOTOS_QUANTITY, { each: true, message: OFFER_VALIDATION_MESSAGES.photos.invalidLength })
     photos?: string[];
 
   @IsOptional()
-  @IsBoolean({ message: OfferValidationMessage.isPremium.invalidFormat })
+  @IsBoolean({ message: OFFER_VALIDATION_MESSAGES.isPremium.invalidFormat })
     isPremium?: boolean;
 
   @IsOptional()
-  @IsEnum(OfferTypeEnum, { message: OfferValidationMessage.type.invalid })
+  @IsEnum(OfferTypeEnum, { message: OFFER_VALIDATION_MESSAGES.type.invalid })
     type?: OfferType;
 
   @IsOptional()
-  @IsInt({ message: OfferValidationMessage.numberOfRooms.invalidFormat })
-  @Min(MIN_ROOM_QUANTITY, { message: OfferValidationMessage.numberOfRooms.minValue })
-  @Max(MAX_ROOM_QUANTITY, { message: OfferValidationMessage.numberOfRooms.maxValue })
+  @IsInt({ message: OFFER_VALIDATION_MESSAGES.numberOfRooms.invalidFormat })
+  @Min(MIN_ROOM_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfRooms.minValue })
+  @Max(MAX_ROOM_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfRooms.maxValue })
     numberOfRooms?: number;
 
   @IsOptional()
-  @IsInt({ message: OfferValidationMessage.numberOfGuests.invalidFormat })
-  @Min(MIN_GUESTS_QUANTITY, { message: OfferValidationMessage.numberOfGuests.minValue })
-  @Max(MAX_GUESTS_QUANTITY, { message: OfferValidationMessage.numberOfGuests.maxValue })
+  @IsInt({ message: OFFER_VALIDATION_MESSAGES.numberOfGuests.invalidFormat })
+  @Min(MIN_GUESTS_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfGuests.minValue })
+  @Max(MAX_GUESTS_QUANTITY, { message: OFFER_VALIDATION_MESSAGES.numberOfGuests.maxValue })
     numberOfGuests?: number;
 
   @IsOptional()
-  @IsInt({ message: OfferValidationMessage.price.invalidFormat })
-  @Min(MIN_PRICE, { message: OfferValidationMessage.price.minValue })
-  @Max(MAX_PRICE, { message: OfferValidationMessage.price.maxValue })
+  @IsInt({ message: OFFER_VALIDATION_MESSAGES.price.invalidFormat })
+  @Min(MIN_PRICE, { message: OFFER_VALIDATION_MESSAGES.price.minValue })
+  @Max(MAX_PRICE, { message: OFFER_VALIDATION_MESSAGES.price.maxValue })
     price?: string;
 
   @IsOptional()
-  @IsArray({ message: OfferValidationMessage.commodities.invalidFormat })
-  @IsEnum(CommodityEnum, { each: true, message: OfferValidationMessage.commodities.invalid })
+  @IsArray({ message: OFFER_VALIDATION_MESSAGES.commodities.invalidFormat })
+  @IsEnum(CommodityEnum, { each: true, message: OFFER_VALIDATION_MESSAGES.commodities.invalid })
     commodities?: Commodity[];
 
   @IsOptional()

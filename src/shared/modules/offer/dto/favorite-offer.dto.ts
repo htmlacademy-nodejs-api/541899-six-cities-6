@@ -1,5 +1,5 @@
 import { IsBoolean } from 'class-validator';
-import { FavoriteOfferMessages } from '../index.js';
+import { FavoriteOfferMessages } from './favorite-offer.messages.js';
 
 export class FavoriteOfferDto {
   @IsBoolean({ message: FavoriteOfferMessages.favorites.invalidFormat })

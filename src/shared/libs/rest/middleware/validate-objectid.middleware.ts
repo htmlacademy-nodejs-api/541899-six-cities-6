@@ -2,7 +2,7 @@ import { Middleware } from './middleware.interface.js';
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
-import { HttpError } from '../errors/http-error.js';
+import { HttpError } from '../errors/http.error.js';
 
 export class ValidateObjectIdMiddleware implements Middleware {
   constructor(private param: string) {}

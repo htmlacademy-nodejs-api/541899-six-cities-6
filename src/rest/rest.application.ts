@@ -8,6 +8,9 @@ import { getMongoURI } from '../shared/helpers/database.js';
 import express, { Express } from 'express';
 import { Controller, ParseTokenMiddleware } from '../shared/libs/rest/index.js';
 import { ExceptionFilter } from '../shared/libs/rest/index.js';
+import cors from 'cors';
+import { STATIC_UPLOAD_ROUTE } from './rest.contstant.js';
+import { getFullServerPath } from '../shared/helpers/support-functions.js';
 
 @injectable()
 export class RestApplication {
@@ -21,6 +24,8 @@ export class RestApplication {
     @inject(Component.UserController) private readonly userController: Controller,
     @inject(Component.OfferController) private readonly offerController: Controller,
     @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
+    @inject(Component.HttpExceptionFilter) private readonly httpExceptionFilter: ExceptionFilter,
+    @inject(Component.ValidationExceptionFilter) private readonly validationExceptionFilter: ExceptionFilter,
   ) {
     this.server = express();
   }
@@ -46,7 +51,7 @@ export class RestApplication {
 
     this.logger.info('Server initialization...');
     await this.initServer();
-    this.logger.info(`Server has been started on http://localhost:${this.config.get('PORT')}`);
+    this.logger.info(`Server started on ${getFullServerPath(this.config.get('HOST'), this.config.get('PORT'))}`);
   }
 
   private async initDb() {
@@ -74,12 +79,15 @@ export class RestApplication {
     const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
 
     this.server.use(express.json());
-    this.server.use('/upload', express.static(this.config.get('UPLOAD_DIRECTORY')));
+    this.server.use(STATIC_UPLOAD_ROUTE, express.static(this.config.get('UPLOAD_DIRECTORY')));
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+    this.server.use(cors());
   }
 
   private async initExceptionFilters() {
     this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
+    this.server.use(this.validationExceptionFilter.catch.bind(this.validationExceptionFilter));
+    this.server.use(this.httpExceptionFilter.catch.bind(this.httpExceptionFilter));
   }
 }

@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class UploadUserAvatarRdo {
+export class UploadImagesRdo {
   @Expose()
-    filepath: string;
+    images: string[];
 }

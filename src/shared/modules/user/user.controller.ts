@@ -9,7 +9,7 @@ import { BaseController, HttpMethod, UploadFileMiddleware, ValidateDtoMiddleware
 import { Config } from '../../interfaces/config.interface.js';
 import { RestSchema } from '../../libs/config/rest.schema.js';
 import { Component } from '../../types/component.enum.js';
-import { HttpError } from '../../libs/rest/errors/http-error.js';
+import { HttpError } from '../../libs/rest/errors/http.error.js';
 import { fillDTO } from '../../helpers/support-functions.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { LoginUserDto } from './dto/login-user.dto.js';
@@ -17,6 +17,7 @@ import { LoginUserRequest } from './login-user-request.type.js';
 import { AuthService } from '../auth/index.js';
 import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
 import { UploadUserAvatarRdo } from './rdo/upload-user-avatar.rdo.js';
+import { ALLOWED_AVATAR_IMAGE_TYPES } from './user.contstant.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -55,7 +56,7 @@ export class UserController extends BaseController {
       handler: this.uploadAvatar,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar', ALLOWED_AVATAR_IMAGE_TYPES),
       ],
     });
   }
@@ -81,11 +82,8 @@ export class UserController extends BaseController {
   ): Promise<void> {
     const user = await this.authService.verify(body);
     const token = await this.authService.authenticate(user);
-    const responseData = fillDTO(LoggedUserRdo, {
-      email: user.email,
-      token,
-    });
-    this.ok(res, responseData);
+    const responseData = fillDTO(LoggedUserRdo, user);
+    this.ok(res, Object.assign(responseData, { token }));
   }
 
   async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response): Promise<void> {

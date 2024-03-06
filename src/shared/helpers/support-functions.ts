@@ -2,6 +2,8 @@ import chalk from 'chalk';
 import { ParsedCommand } from '../types/parsed-command.type.js';
 import { PackageJSONConfig } from '../types/package-json-config.type.js';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
+import { ValidationErrorField } from '../libs/rest/types/validation-error-field.type.js';
+import { ApplicationError } from '../libs/rest/types/application-error.enum.js';
 
 export function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
   return (
@@ -79,8 +81,10 @@ export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
   return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
 }
 
-export function createErrorObject(message: string) {
-  return {
-    error: message,
-  };
+export function createErrorObject(errorType: ApplicationError, error: string, details: ValidationErrorField[] = []) {
+  return { errorType, error, details };
+}
+
+export function getFullServerPath(host: string, port: number) {
+  return `http://${host}:${port}`;
 }

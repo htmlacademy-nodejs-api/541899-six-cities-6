@@ -7,7 +7,7 @@ import {
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
   DocumentExistsMiddleware,
-  PrivateRouteMiddleware, RequestBody,
+  PrivateRouteMiddleware, RequestBody, UploadFileMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/component.enum.js';
 import { Logger } from '../../interfaces/logger.interface.js';
@@ -16,14 +16,18 @@ import { OfferRdo } from './rdo/offer.rdo.js';
 import { CreateOfferRequest } from './create-offer-request.type.js';
 import { UpdateOfferRequest } from './update-offer-request.type.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { MAX_PREMIUM_OFFERS_QUANTITY } from '../../constants/offer.constants.js';
+import { ALLOWED_IMAGE_TYPES, MAX_PREMIUM_OFFERS_QUANTITY, PHOTOS_QUANTITY } from '../../constants/offer.constants.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { FavoriteOfferDto } from './dto/favorite-offer.dto.js';
 import { ParamOfferId } from './type/param-offerid.type.js';
 import { CommentRdo, CommentService, CreateCommentDto } from '../comment/index.js';
 import { CreateCommentRequest } from '../comment/types/create-comment-request.type.js';
-import { HttpError } from '../../libs/rest/errors/http-error.js';
+import { HttpError } from '../../libs/rest/errors/http.error.js';
 import { StatusCodes } from 'http-status-codes';
+import { ValidateUserMiddleware } from '../../libs/rest/middleware/validate-user.middleware.js';
+import { RestSchema } from '../../libs/config/rest.schema.js';
+import { Config } from '../../interfaces/config.interface.js';
+import { UploadImagesRdo } from '../user/rdo/upload-images.rdo.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -31,6 +35,7 @@ export class OfferController extends BaseController {
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.OfferService) private readonly offerService: OfferService,
     @inject(Component.CommentService) private readonly commentService: CommentService,
+    @inject(Component.Config) private readonly configService: Config<RestSchema>,
   ) {
     super(logger);
     this.setRoutes();
@@ -69,6 +74,7 @@ export class OfferController extends BaseController {
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateUserMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
     this.addRoute({
@@ -79,6 +85,7 @@ export class OfferController extends BaseController {
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateUserMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
     this.addRoute({
@@ -122,6 +129,21 @@ export class OfferController extends BaseController {
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(FavoriteOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId/images',
+      method: HttpMethod.Post,
+      handler: this.uploadImages,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateUserMiddleware(this.offerService, 'Offer', 'offerId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image',
+          ALLOWED_IMAGE_TYPES,
+          PHOTOS_QUANTITY
+        )
       ]
     });
   }
@@ -205,5 +227,17 @@ export class OfferController extends BaseController {
     const comment = await this.commentService.createComment({ ...body, userId: tokenPayload.id });
 
     this.created(res, fillDTO(CommentRdo, comment));
+  }
+
+  async uploadImages({ params, files }: Request<ParamOfferId>, res: Response) {
+    if (!Array.isArray(files)) {
+      throw new HttpError(StatusCodes.BAD_REQUEST, 'No files uploaded');
+    }
+    const { offerId } = params;
+    const updateDto = {
+      photos: files?.map((file) => file.filename) ?? []
+    };
+    await this.offerService.updateOffer(offerId, updateDto);
+    this.created(res, fillDTO(UploadImagesRdo, updateDto));
   }
 }

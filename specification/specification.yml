@@ -21,13 +21,11 @@ paths:
         - users
       summary: User authentication
       description: Authenticates user
-
-  /users/logout:
-    post:
+    get:
       tags:
         - users
-      summary: User unauthentication
-      description: Unauthenticates user
+      summary: Auth check
+      description: Return info about logged user
 
   /users/{userId}/avatar:
     post:
@@ -35,50 +33,21 @@ paths:
         - users
       summary: Upload avatar
       description: Upload user's avatar
-      responses:
-        '201':
-          description: image has been uploaded
-        '401':
-          description: user is not authorized
-
-  /users/favorite:
-    get:
-      tags:
-        - users
-      summary: User's favorite offers
-      description: Returns offers, added to favorites by user
-    post:
-      tags:
-        - users
-      summary: Add offer to favorites
-      description: Adds offer to favorites
-    delete:
-      tags:
-        - users
-      summary: Remove offer from favorites
-      description: Removes offer from favorites
 
   /offers:
+    post:
+      tags:
+        - offers
+      summary: Offer creation
+      description: Creates new offer
     get:
       tags:
         - offers
       summary: Get all offers
       description: Returns offers list
 
-  /offers/create:
-    post:
-      tags:
-        - offers
-      summary: Offer creation
-      description: Creates new offer
-
   /offers/{offerId}:
-    get:
-      tags:
-        - offers
-      summary: Get detailed offer by ID
-      description: Returns specific offer data
-    put:
+    patch:
       tags:
         - offers
       summary: Offer editing
@@ -88,6 +57,11 @@ paths:
         - offers
       summary: Offer deleting
       description: Deletes offer
+    get:
+      tags:
+        - offers
+      summary: Get detailed offer by ID
+      description: Returns specific offer data
 
   /offers/{offerId}/comments:
     get:
@@ -107,6 +81,18 @@ paths:
         - offer
       summary: Seleted location premium offers
       description: Returns list of premium offer for a city
+
+  /offers/favorites/list:
+    get:
+      tags:
+        - users
+      summary: User's favorite offers
+      description: Returns offers, added to favorites by user
+    put:
+      tags:
+        - users
+      summary: Add offer to or remove from favorites
+      description: Add offer to or remove from favorites
 
 components:
   schemas:

@@ -31,7 +31,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     type: Types.ObjectId,
     default: [],
   })
-    favoriteOffers: Types.Array<Types.ObjectId>;
+    favorites: Types.Array<Types.ObjectId>;
 
   @prop({ required: true, default: '' })
     password: string;

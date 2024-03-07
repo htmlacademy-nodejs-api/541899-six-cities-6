@@ -3,5 +3,5 @@ import { FAVORITE_OFFER_MESSAGES } from './favorite-offer.messages.js';
 
 export class FavoriteOfferDto {
   @IsBoolean({ message: FAVORITE_OFFER_MESSAGES.FAVORITES.INVALID_FORMAT })
-    favorites: boolean;
+    isFavorite: boolean;
 }

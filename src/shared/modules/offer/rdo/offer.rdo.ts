@@ -34,7 +34,7 @@ export class OfferRdo {
     rating: number;
 
   @Expose()
-    offerType: OfferType;
+    type: OfferType;
 
   @Expose()
     numberOfRooms: number;
@@ -57,7 +57,7 @@ export class OfferRdo {
 
   @Expose()
     coordinates: {
-    latitude: string,
-    gratitude: string
-  };
+      latitude: string,
+      gratitude: string
+    };
 }
